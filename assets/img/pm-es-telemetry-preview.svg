@@ -1,0 +1,202 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">PM-ES public telemetry interface preview</title>
+  <desc id="desc">A simulated, monitoring-only public visualization showing system status, speed, DC bus observation, communication health and event history without implementation details.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0B0F14"/>
+      <stop offset="1" stop-color="#111820"/>
+    </linearGradient>
+    <linearGradient id="panel" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#16212B"/>
+      <stop offset="1" stop-color="#111820"/>
+    </linearGradient>
+    <linearGradient id="blueGlow" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#2F91D8" stop-opacity="0.2"/>
+      <stop offset="1" stop-color="#2F91D8" stop-opacity="0.92"/>
+    </linearGradient>
+    <linearGradient id="greenGlow" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#1FAE8A" stop-opacity="0.18"/>
+      <stop offset="1" stop-color="#1FAE8A" stop-opacity="0.9"/>
+    </linearGradient>
+    <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="5" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <clipPath id="chartClip"><rect x="58" y="0" width="784" height="162" rx="10"/></clipPath>
+    <style>
+      .ui { font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+      .mono { font-family: ui-monospace, "SFMono-Regular", Consolas, monospace; }
+      .muted { fill: #A7B1BC; }
+      .text { fill: #F3F6F8; }
+      .blue { fill: #2F91D8; }
+      .green { fill: #1FAE8A; }
+      .copper { fill: #C7793B; }
+      .warn { fill: #E0A33A; }
+      .panel { fill: url(#panel); stroke: #2A3741; stroke-width: 2; }
+      .node { fill: #111820; stroke: #2A3741; stroke-width: 2; }
+      .node.live { stroke: #2F91D8; }
+      .node.safe { stroke: #1FAE8A; }
+      .gridline { stroke: #2A3741; stroke-width: 1; opacity: .7; }
+      .flow { fill: none; stroke: #2F91D8; stroke-width: 6; stroke-linecap: round; stroke-dasharray: 14 18; animation: flow 2.1s linear infinite; }
+      .trace-a { fill: none; stroke: #2F91D8; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; filter: url(#softGlow); stroke-dasharray: 950; stroke-dashoffset: 950; animation: draw 4.2s ease-in-out infinite alternate; }
+      .trace-b { fill: none; stroke: #C7793B; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 930; stroke-dashoffset: 930; animation: draw 5.2s .5s ease-in-out infinite alternate; }
+      .pulse { animation: pulse 2.2s ease-in-out infinite; transform-origin: center; }
+      .bar-blue { animation: barBlue 4s ease-in-out infinite alternate; }
+      .bar-green { animation: barGreen 4.6s .4s ease-in-out infinite alternate; }
+      @keyframes flow { to { stroke-dashoffset: -64; } }
+      @keyframes draw { to { stroke-dashoffset: 0; } }
+      @keyframes pulse { 0%,100% { opacity:.45; } 50% { opacity:1; } }
+      @keyframes barBlue { from { width: 168px; } to { width: 222px; } }
+      @keyframes barGreen { from { width: 190px; } to { width: 246px; } }
+      @media (prefers-reduced-motion: reduce) { * { animation: none !important; } .trace-a,.trace-b { stroke-dashoffset: 0; } }
+    </style>
+  </defs>
+
+  <rect width="1600" height="900" fill="url(#bg)"/>
+  <g class="ui">
+    <rect x="0" y="0" width="1600" height="94" fill="#090D12" stroke="#2A3741" stroke-width="0 0 2 0"/>
+    <circle cx="56" cy="47" r="25" fill="none" stroke="#C7793B" stroke-width="2"/>
+    <text x="56" y="55" text-anchor="middle" class="copper" font-size="18" font-weight="800">PM</text>
+    <text x="98" y="42" class="text" font-size="27" font-weight="750">PM-ES Telemetry</text>
+    <text x="98" y="67" class="muted" font-size="15" font-weight="600">public interface preview · monitoring only</text>
+
+    <g transform="translate(840 26)">
+      <rect width="168" height="42" rx="21" fill="#15362F" stroke="#1FAE8A"/>
+      <circle cx="22" cy="21" r="6" class="green pulse"/>
+      <text x="38" y="27" class="text" font-size="14" font-weight="750">SYSTEM NOMINAL</text>
+    </g>
+    <g transform="translate(1024 26)">
+      <rect width="154" height="42" rx="21" fill="#10283A" stroke="#2F91D8"/>
+      <text x="77" y="27" text-anchor="middle" class="text" font-size="14" font-weight="750">SIMULATED DATA</text>
+    </g>
+    <g transform="translate(1194 26)">
+      <rect width="188" height="42" rx="21" fill="#2B2415" stroke="#E0A33A"/>
+      <text x="94" y="27" text-anchor="middle" class="text" font-size="14" font-weight="750">NO LIVE CONTROL</text>
+    </g>
+    <g transform="translate(1398 26)">
+      <rect width="150" height="42" rx="8" fill="#111820" stroke="#2A3741"/>
+      <text x="75" y="27" text-anchor="middle" class="muted mono" font-size="13">PUBLIC VIEW</text>
+    </g>
+
+    <g transform="translate(34 122)">
+      <rect class="panel" width="1532" height="180" rx="16"/>
+      <text x="26" y="36" class="muted" font-size="14" font-weight="750" letter-spacing="1.4">SYSTEM FLOW</text>
+
+      <g transform="translate(32 60)">
+        <rect class="node live" width="240" height="86" rx="12"/>
+        <text x="20" y="31" class="muted" font-size="13" font-weight="700">DC BUS</text>
+        <text x="20" y="62" class="text mono" font-size="25" font-weight="800">NOMINAL</text>
+        <circle cx="212" cy="43" r="9" class="green pulse"/>
+      </g>
+      <path d="M304 103 H420" class="flow"/>
+      <g transform="translate(420 60)">
+        <rect class="node live" width="250" height="86" rx="12"/>
+        <text x="20" y="31" class="muted" font-size="13" font-weight="700">FOC CONTROLLER</text>
+        <text x="20" y="62" class="text" font-size="24" font-weight="800">ONLINE</text>
+        <circle cx="220" cy="43" r="9" class="green pulse"/>
+      </g>
+      <path d="M670 103 H786" class="flow"/>
+      <g transform="translate(786 60)">
+        <rect class="node live" width="250" height="86" rx="12"/>
+        <text x="20" y="31" class="muted" font-size="13" font-weight="700">PM MACHINE</text>
+        <text x="20" y="62" class="text mono" font-size="25" font-weight="800">300 RPM</text>
+        <circle cx="220" cy="43" r="9" class="blue pulse"/>
+      </g>
+      <path d="M1036 103 H1152" class="flow"/>
+      <g transform="translate(1152 60)">
+        <rect class="node safe" width="342" height="86" rx="12"/>
+        <text x="20" y="31" class="muted" font-size="13" font-weight="700">ENCODER + SUPERVISOR</text>
+        <text x="20" y="62" class="text" font-size="24" font-weight="800">REFERENCE VALID</text>
+        <circle cx="310" cy="43" r="9" class="green pulse"/>
+      </g>
+    </g>
+
+    <g transform="translate(34 326)">
+      <g>
+        <rect class="panel" width="290" height="154" rx="16"/>
+        <text x="24" y="35" class="muted" font-size="14" font-weight="750">DC BUS OBSERVATION</text>
+        <text x="24" y="82" class="text mono" font-size="34" font-weight="800">STABLE</text>
+        <rect x="24" y="108" width="242" height="12" rx="6" fill="#24323D"/>
+        <rect x="24" y="108" height="12" rx="6" fill="url(#blueGlow)" class="bar-blue"/>
+        <text x="24" y="139" class="muted" font-size="13">illustrative simulation</text>
+      </g>
+      <g transform="translate(310 0)">
+        <rect class="panel" width="290" height="154" rx="16"/>
+        <text x="24" y="35" class="muted" font-size="14" font-weight="750">MEASURED SPEED</text>
+        <text x="24" y="82" class="text mono" font-size="34" font-weight="800">300 RPM</text>
+        <rect x="24" y="108" width="242" height="12" rx="6" fill="#24323D"/>
+        <rect x="24" y="108" height="12" rx="6" fill="url(#greenGlow)" class="bar-green"/>
+        <text x="24" y="139" class="muted" font-size="13">encoder-derived preview</text>
+      </g>
+      <g transform="translate(620 0)">
+        <rect class="panel" width="290" height="154" rx="16"/>
+        <text x="24" y="35" class="muted" font-size="14" font-weight="750">COMMUNICATION</text>
+        <text x="24" y="82" class="text mono" font-size="34" font-weight="800">LINKED</text>
+        <circle cx="250" cy="69" r="12" class="green pulse"/>
+        <text x="24" y="118" class="green" font-size="14" font-weight="750">HEALTHY TELEMETRY</text>
+        <text x="24" y="139" class="muted" font-size="13">public status abstraction</text>
+      </g>
+      <g transform="translate(930 0)">
+        <rect class="panel" width="290" height="154" rx="16"/>
+        <text x="24" y="35" class="muted" font-size="14" font-weight="750">PROTECTION STATUS</text>
+        <text x="24" y="82" class="text mono" font-size="34" font-weight="800">READY</text>
+        <text x="24" y="118" class="warn" font-size="14" font-weight="750">HARDWARE AUTHORITY</text>
+        <text x="24" y="139" class="muted" font-size="13">observed, never overridden</text>
+      </g>
+      <g transform="translate(1240 0)">
+        <rect class="panel" width="292" height="154" rx="16"/>
+        <text x="24" y="35" class="muted" font-size="14" font-weight="750">ACTIVE ALARMS</text>
+        <text x="24" y="82" class="text mono" font-size="34" font-weight="800">NONE</text>
+        <circle cx="252" cy="69" r="12" class="green pulse"/>
+        <text x="24" y="118" class="green" font-size="14" font-weight="750">NOMINAL SCENARIO</text>
+        <text x="24" y="139" class="muted" font-size="13">not a bench result</text>
+      </g>
+    </g>
+
+    <g transform="translate(34 504)">
+      <rect class="panel" width="920" height="326" rx="16"/>
+      <text x="24" y="36" class="text" font-size="18" font-weight="760">Telemetry trends</text>
+      <text x="810" y="36" class="muted mono" font-size="13">SIMULATION WINDOW</text>
+      <g transform="translate(18 62)" clip-path="url(#chartClip)">
+        <rect x="40" y="0" width="842" height="210" rx="10" fill="#0C1218"/>
+        <path d="M58 36 H842 M58 76 H842 M58 116 H842 M58 156 H842" class="gridline"/>
+        <path d="M138 0 V162 M218 0 V162 M298 0 V162 M378 0 V162 M458 0 V162 M538 0 V162 M618 0 V162 M698 0 V162 M778 0 V162" class="gridline" opacity=".45"/>
+        <path d="M58 124 C105 121, 124 118, 166 120 S246 128, 290 116 S366 106, 410 111 S482 123, 530 108 S612 96, 656 101 S740 118, 790 96 S826 92, 842 88" fill="none" stroke="#2F91D8" stroke-width="3" opacity="0.28"/>
+        <path d="M58 142 C100 141, 142 139, 182 140 S264 141, 306 136 S384 137, 426 129 S510 130, 554 121 S636 124, 682 116 S758 120, 804 111 S828 107, 842 104" fill="none" stroke="#C7793B" stroke-width="2" opacity="0.3"/>
+        <path class="trace-a" d="M58 124 C105 121, 124 118, 166 120 S246 128, 290 116 S366 106, 410 111 S482 123, 530 108 S612 96, 656 101 S740 118, 790 96 S826 92, 842 88"/>
+        <path class="trace-b" d="M58 142 C100 141, 142 139, 182 140 S264 141, 306 136 S384 137, 426 129 S510 130, 554 121 S636 124, 682 116 S758 120, 804 111 S828 107, 842 104"/>
+      </g>
+      <g transform="translate(58 282)">
+        <circle cx="0" cy="0" r="6" class="blue"/>
+        <text x="14" y="5" class="muted" font-size="13">speed / system response</text>
+        <circle cx="215" cy="0" r="6" class="copper"/>
+        <text x="229" y="5" class="muted" font-size="13">DC-bus observation</text>
+      </g>
+
+      <g transform="translate(980 0)">
+        <rect class="panel" width="552" height="326" rx="16"/>
+        <text x="24" y="36" class="text" font-size="18" font-weight="760">Public status timeline</text>
+        <g transform="translate(26 62)">
+          <line x1="10" y1="0" x2="10" y2="216" stroke="#2A3741" stroke-width="3"/>
+          <circle cx="10" cy="16" r="8" class="green"/>
+          <text x="34" y="12" class="text" font-size="15" font-weight="700">Monitoring service initialized</text>
+          <text x="34" y="33" class="muted" font-size="13">simulated interface state</text>
+          <circle cx="10" cy="82" r="8" class="blue"/>
+          <text x="34" y="78" class="text" font-size="15" font-weight="700">Reference acquired</text>
+          <text x="34" y="99" class="muted" font-size="13">position status abstracted for public display</text>
+          <circle cx="10" cy="148" r="8" class="copper"/>
+          <text x="34" y="144" class="text" font-size="15" font-weight="700">Nominal running scenario</text>
+          <text x="34" y="165" class="muted" font-size="13">illustrative values, not measured performance</text>
+          <circle cx="10" cy="214" r="8" class="green pulse"/>
+          <text x="34" y="210" class="text" font-size="15" font-weight="700">No active alarms</text>
+          <text x="34" y="231" class="muted" font-size="13">hardware validation remains pending</text>
+        </g>
+      </g>
+    </g>
+
+    <g transform="translate(34 852)">
+      <text x="0" y="0" class="muted mono" font-size="12" letter-spacing="1.1">PUBLIC VISUALIZATION · SIMULATED DATA · PRIVATE DASHBOARD SOURCE NOT PUBLISHED · NO LIVE CONTROL</text>
+      <text x="1532" y="0" text-anchor="end" class="copper" font-size="12" font-weight="800">PM-ES</text>
+    </g>
+  </g>
+</svg>
