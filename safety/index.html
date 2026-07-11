@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Safety-Oriented Architecture | PM-ES</title>
+    <meta name="description" content="PM-ES safety-oriented architecture keeps DC-bus protection hardware-authoritative while software adds supervision, diagnostics and controlled behaviour.">
+    <meta name="robots" content="index,follow">
+    <link rel="canonical" href="https://juggerknot18.github.io/PM-ES/safety/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="PM-ES">
+    <meta property="og:title" content="Safety-Oriented Architecture | PM-ES">
+    <meta property="og:description" content="PM-ES safety-oriented architecture keeps DC-bus protection hardware-authoritative while software adds supervision, diagnostics and controlled behaviour.">
+    <meta property="og:url" content="https://juggerknot18.github.io/PM-ES/safety/">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Safety-Oriented Architecture | PM-ES">
+    <meta name="twitter:description" content="PM-ES safety-oriented architecture keeps DC-bus protection hardware-authoritative while software adds supervision, diagnostics and controlled behaviour.">
+    <meta name="theme-color" content="#0B0F14">
+    <link rel="manifest" href="../site.webmanifest">
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="../assets/css/main.css">
+    
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="brand" href="../" aria-label="PM-ES home">
+          <span class="brand-mark" aria-hidden="true">PM</span>
+          <span><strong>PM-ES</strong><small>Power Management - Electric System</small></span>
+        </a>
+        <button class="menu-button" type="button" aria-controls="primary-navigation" aria-expanded="false">
+          <span class="menu-lines" aria-hidden="true"></span>
+          <span class="visually-hidden">Toggle navigation</span>
+        </button>
+        <nav id="primary-navigation" class="primary-nav" aria-label="Primary navigation">
+          <a href="../">Home</a>
+<a href="../research/">Research</a>
+<a href="../architecture/">Architecture</a>
+<a href="../systems/">Systems</a>
+<a href="../safety/" aria-current="page">Safety</a>
+<a href="../status/">Status</a>
+<a href="../publications/">Publications</a>
+<a href="../collaboration/">Collaboration</a>
+<a href="../about/">About</a>
+<a href="../contact/">Contact</a>
+        </nav>
+      </div>
+    </header>
+    <main id="main-content">
+      <section class="page-hero">
+      <p class="eyebrow">Safety</p>
+      <h1>Hardware protection remains authoritative</h1>
+      <p class="lead">Hardware protection remains authoritative. Software adds supervision, diagnostics and controlled behaviour without becoming a single point of failure for DC-bus protection.</p>
+    </section>
+    <section class="content-band">
+      <h2>Safety-oriented principles</h2>
+      <ul class="check-list">
+        <li>Critical protection must remain active through MCU reset or failure.</li>
+        <li>Supervisory tasks are designed around non-blocking behaviour.</li>
+        <li>Low-level FOC remains outside the STM32 supervisor.</li>
+        <li>Normal operation requires valid prerequisites and explicit state coordination.</li>
+        <li>Monitoring interfaces do not gain active control authority by default.</li>
+        <li>Faults escalate by reducing or stopping the cause, not by suppressing protection.</li>
+      </ul>
+      <div class="notice caution"><strong>Experimental project notice.</strong> PM-ES is an experimental engineering project. Public documentation describes design intent and development status; it is not a certification, a safety manual or an instruction to reproduce high-energy hardware without qualified review.</div>
+    </section>
+    <section class="related-links"><h2>Continue</h2><a href="../architecture/">Architecture overview</a><a href="../systems/">System blocks</a><a href="../contact/">Contact PM-ES</a></section>
+    </main>
+    <footer class="site-footer">
+      <div class="footer-grid">
+        <div>
+          <p class="footer-title">PM-ES</p>
+          <p>Independent engineering research project in France exploring permanent-magnet systems, power electronics, embedded supervision and regenerative energy management.</p>
+          <p class="fine-print">No cookies. No tracking.</p>
+        </div>
+        <nav aria-label="Footer navigation" class="footer-links">
+          <a href="../">Home</a>
+<a href="../research/">Research</a>
+<a href="../architecture/">Architecture</a>
+<a href="../systems/">Systems</a>
+<a href="../safety/" aria-current="page">Safety</a>
+<a href="../status/">Status</a>
+<a href="../publications/">Publications</a>
+<a href="../collaboration/">Collaboration</a>
+<a href="../about/">About</a>
+<a href="../contact/">Contact</a>
+          <a href="../PUBLIC_CONTENT_POLICY.md">Public content policy</a>
+        </nav>
+        <div>
+          <p class="footer-title">Public contact</p>
+          <p><a href="https://github.com/Juggerknot18" rel="noopener noreferrer">GitHub profile</a></p>
+          <p>Last updated <time datetime="2026-07-11">2026-07-11</time></p>
+        </div>
+      </div>
+    </footer>
+    <script src="../assets/js/progressive.js" defer></script>
+  </body>
+</html>

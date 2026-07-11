@@ -1,0 +1,17 @@
+{
+  "name": "PM-ES",
+  "short_name": "PM-ES",
+  "description": "Independent R&D project exploring permanent-magnet machines, power electronics, embedded supervision and regenerative energy management.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "minimal-ui",
+  "background_color": "#0B0F14",
+  "theme_color": "#0B0F14",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

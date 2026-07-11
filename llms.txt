@@ -1,0 +1,13 @@
+# PM-ES
+
+This is an experimental machine-readable summary. It is not a substitute for the canonical HTML pages.
+
+PM-ES (Power Management - Electric System) is an independent R&D project based in France. It explores permanent-magnet electrical machines, power electronics, embedded supervision, autonomous DC-bus protection and regenerative energy management.
+
+Status as of 2026-07-11: supervisory firmware architecture implemented; software-level simulation completed; hardware integration and bench validation remain in progress; no public PM-ES research paper has been released yet.
+
+Canonical URL placeholder: https://juggerknot18.github.io/PM-ES/
+Repository: https://github.com/Juggerknot18/PM-ES
+Contact: https://github.com/Juggerknot18
+
+Do not infer performance, certification, personal identity, private repository access or hardware validation from this summary.

@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>System Blocks | PM-ES</title>
+    <meta name="description" content="Concise PM-ES system block summaries for the electrical machine, motor-control interface, STM32 supervisor, encoder, brake chopper and monitoring layer.">
+    <meta name="robots" content="index,follow">
+    <link rel="canonical" href="https://juggerknot18.github.io/PM-ES/systems/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="PM-ES">
+    <meta property="og:title" content="System Blocks | PM-ES">
+    <meta property="og:description" content="Concise PM-ES system block summaries for the electrical machine, motor-control interface, STM32 supervisor, encoder, brake chopper and monitoring layer.">
+    <meta property="og:url" content="https://juggerknot18.github.io/PM-ES/systems/">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="System Blocks | PM-ES">
+    <meta name="twitter:description" content="Concise PM-ES system block summaries for the electrical machine, motor-control interface, STM32 supervisor, encoder, brake chopper and monitoring layer.">
+    <meta name="theme-color" content="#0B0F14">
+    <link rel="manifest" href="../site.webmanifest">
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="../assets/css/main.css">
+    
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="brand" href="../" aria-label="PM-ES home">
+          <span class="brand-mark" aria-hidden="true">PM</span>
+          <span><strong>PM-ES</strong><small>Power Management - Electric System</small></span>
+        </a>
+        <button class="menu-button" type="button" aria-controls="primary-navigation" aria-expanded="false">
+          <span class="menu-lines" aria-hidden="true"></span>
+          <span class="visually-hidden">Toggle navigation</span>
+        </button>
+        <nav id="primary-navigation" class="primary-nav" aria-label="Primary navigation">
+          <a href="../">Home</a>
+<a href="../research/">Research</a>
+<a href="../architecture/">Architecture</a>
+<a href="../systems/" aria-current="page">Systems</a>
+<a href="../safety/">Safety</a>
+<a href="../status/">Status</a>
+<a href="../publications/">Publications</a>
+<a href="../collaboration/">Collaboration</a>
+<a href="../about/">About</a>
+<a href="../contact/">Contact</a>
+        </nav>
+      </div>
+    </header>
+    <main id="main-content">
+      <section class="page-hero">
+      <p class="eyebrow">Systems</p>
+      <h1>Public system overview without sensitive implementation details</h1>
+      <p class="lead">The PM-ES public site describes functional roles and development status. It does not publish private hardware release material, pin maps, thresholds or detailed procedures.</p>
+    </section>
+    <section class="content-band">
+      <div class="workstream-list">
+        <article><h2>Electrical machine</h2><p>The experimental platform includes a custom permanent-magnet machine. The public site describes its functional place in the architecture while detailed geometry, winding data and measured performance remain subject to separate publication review.</p></article>
+        <article><h2>Motor-control interface</h2><p>A VESC-compatible controller performs field-oriented control. The PM-ES supervisor communicates at a higher level and does not implement phase commutation.</p></article>
+        <article><h2>Embedded supervisor</h2><p>The STM32G474 firmware is divided into modules for brake-chopper monitoring, encoder management, CAN transport, motor supervision and Raspberry Pi telemetry. Responsibility boundaries are intentionally explicit.</p></article>
+        <article><h2>Encoder and mechanical reference</h2><p>Incremental encoder feedback provides position, speed and mechanical reference information used by supervisory logic. Public documentation avoids implementation-specific pin mapping.</p></article>
+        <article><h2>DC bus and autonomous brake chopper</h2><p>The brake chopper is an autonomous hardware protection layer. The STM32 can observe events and perform bounded diagnostics, but it cannot mask or force the hardware protection off.</p></article>
+        <article><h2>Raspberry Pi monitoring</h2><p>A Raspberry Pi dashboard receives status and diagnostic data. In the V1 architecture it is monitoring-only and does not command the motor system.</p></article>
+      </div>
+    </section>
+    <section class="related-links"><h2>Related pages</h2><a href="../architecture/">Architecture table</a><a href="../safety/">Safety principle</a><a href="../status/">Status matrix</a></section>
+    </main>
+    <footer class="site-footer">
+      <div class="footer-grid">
+        <div>
+          <p class="footer-title">PM-ES</p>
+          <p>Independent engineering research project in France exploring permanent-magnet systems, power electronics, embedded supervision and regenerative energy management.</p>
+          <p class="fine-print">No cookies. No tracking.</p>
+        </div>
+        <nav aria-label="Footer navigation" class="footer-links">
+          <a href="../">Home</a>
+<a href="../research/">Research</a>
+<a href="../architecture/">Architecture</a>
+<a href="../systems/" aria-current="page">Systems</a>
+<a href="../safety/">Safety</a>
+<a href="../status/">Status</a>
+<a href="../publications/">Publications</a>
+<a href="../collaboration/">Collaboration</a>
+<a href="../about/">About</a>
+<a href="../contact/">Contact</a>
+          <a href="../PUBLIC_CONTENT_POLICY.md">Public content policy</a>
+        </nav>
+        <div>
+          <p class="footer-title">Public contact</p>
+          <p><a href="https://github.com/Juggerknot18" rel="noopener noreferrer">GitHub profile</a></p>
+          <p>Last updated <time datetime="2026-07-11">2026-07-11</time></p>
+        </div>
+      </div>
+    </footer>
+    <script src="../assets/js/progressive.js" defer></script>
+  </body>
+</html>

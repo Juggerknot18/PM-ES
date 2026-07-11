@@ -1,0 +1,32 @@
+{
+  "name": "PM-ES",
+  "expandedName": "Power Management - Electric System",
+  "status": "active-development",
+  "projectType": "independent-r-and-d",
+  "country": "France",
+  "domains": [
+    "permanent-magnet electrical machines",
+    "power electronics",
+    "embedded supervision",
+    "DC-bus protection",
+    "regenerative energy management"
+  ],
+  "systems": [
+    "permanent-magnet machine",
+    "VESC-compatible FOC controller",
+    "STM32G474 supervisor",
+    "encoder feedback",
+    "autonomous hardware brake chopper",
+    "Raspberry Pi monitoring"
+  ],
+  "validation": {
+    "softwareSimulation": "completed",
+    "hardwareIntegration": "in-progress",
+    "publicBenchResults": "not-yet-released"
+  },
+  "contact": {
+    "type": "github-profile",
+    "url": "https://github.com/Juggerknot18"
+  },
+  "lastUpdated": "2026-07-11"
+}
