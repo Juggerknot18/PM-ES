@@ -24,6 +24,33 @@
     "hardwareIntegration": "in-progress",
     "publicBenchResults": "not-yet-released"
   },
+  "collaboration": {
+    "open": true,
+    "targetProfiles": [
+      "Fab Labs",
+      "makerspaces",
+      "university laboratories",
+      "research laboratories",
+      "research groups",
+      "independent researchers",
+      "independent engineers",
+      "electrical engineering communities",
+      "open hardware communities",
+      "open engineering communities"
+    ],
+    "areas": [
+      "technical literature and paper sharing",
+      "electrical-machine modelling",
+      "power-electronics architecture review",
+      "embedded supervision",
+      "motor-control systems",
+      "instrumentation and test methodology",
+      "EMC and signal integrity",
+      "mechanical fabrication",
+      "reproducibility",
+      "fault analysis"
+    ]
+  },
   "contact": {
     "type": "github-profile",
     "url": "https://github.com/Juggerknot18"
