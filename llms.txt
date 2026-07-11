@@ -42,5 +42,8 @@ French discovery equivalents include fablab, laboratoire universitaire, laborato
 
 ## Contact and repository
 
+## Contact and repository
+
+- [Email PM-ES](mailto:research.pmes@gmail.com): Public project email for technical exchanges, research references, architecture reviews and collaboration proposals.
 - [GitHub repository](https://github.com/Juggerknot18/PM-ES): Public source repository for the PM-ES website materials.
-- [GitHub profile](https://github.com/Juggerknot18): Public GitHub contact profile for project-related exchange.
+- [GitHub profile](https://github.com/Juggerknot18): Secondary public contact route for project-related exchange.
