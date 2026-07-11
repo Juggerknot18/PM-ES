@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>PM-ES Telemetry | Public Monitoring Preview</title>
+    <meta name="description" content="Public PM-ES telemetry preview showing the monitoring scope for DC-bus observation, motor speed, encoder status, communication health and alarms using simulated data only.">
+    <meta name="robots" content="index,follow">
+    <link rel="canonical" href="https://juggerknot18.github.io/PM-ES/telemetry/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="PM-ES">
+    <meta property="og:title" content="PM-ES Telemetry | Public Monitoring Preview">
+    <meta property="og:description" content="A monitoring-only public visualization of the PM-ES telemetry interface using simulated data. No live control and no private implementation details.">
+    <meta property="og:url" content="https://juggerknot18.github.io/PM-ES/telemetry/">
+    <meta property="og:image" content="https://juggerknot18.github.io/PM-ES/assets/img/pm-es-social-card.png">
+    <meta property="og:image:secure_url" content="https://juggerknot18.github.io/PM-ES/assets/img/pm-es-social-card.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="PM-ES social preview card with a dark technical architecture motif.">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="PM-ES Telemetry | Public Monitoring Preview">
+    <meta name="twitter:description" content="Monitoring-only public visualization using simulated data. No live control and no private dashboard source.">
+    <meta name="twitter:image" content="https://juggerknot18.github.io/PM-ES/assets/img/pm-es-social-card.png">
+    <meta name="twitter:image:alt" content="PM-ES social preview card with a dark technical architecture motif.">
+    <meta name="theme-color" content="#0B0F14">
+    <link rel="manifest" href="../site.webmanifest">
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <style>
+      .telemetry-preview { margin: 0; }
+      .telemetry-preview img { display: block; width: 100%; height: auto; border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-surface); }
+      .telemetry-preview figcaption { color: var(--color-muted); margin-top: var(--space-3); max-width: var(--reading-max); }
+      .boundary-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-4); }
+      .boundary-grid article { border: 1px solid var(--color-border); background: var(--color-surface); border-radius: var(--radius-md); padding: var(--space-6); }
+      .boundary-grid article:nth-child(1) { border-top: 3px solid var(--color-blue); }
+      .boundary-grid article:nth-child(2) { border-top: 3px solid var(--color-warning); }
+      .boundary-grid article:nth-child(3) { border-top: 3px solid var(--color-emerald); }
+      .telemetry-list { max-width: var(--reading-max); padding-left: 1.2rem; }
+      .telemetry-list li { margin-bottom: var(--space-2); }
+      @media (max-width: 860px) { .boundary-grid { grid-template-columns: 1fr; } }
+    </style>
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "name": "PM-ES Telemetry",
+      "description": "Public monitoring-only preview of the PM-ES telemetry interface using simulated data.",
+      "url": "https://juggerknot18.github.io/PM-ES/telemetry/",
+      "isPartOf": {
+        "@type": "WebSite",
+        "name": "PM-ES",
+        "url": "https://juggerknot18.github.io/PM-ES/"
+      },
+      "about": [
+        "embedded supervision",
+        "telemetry",
+        "DC-bus observation",
+        "motor monitoring",
+        "encoder status",
+        "fault diagnostics"
+      ]
+    },
+    {
+      "@type": "ImageObject",
+      "name": "PM-ES public telemetry interface preview",
+      "contentUrl": "https://juggerknot18.github.io/PM-ES/assets/img/pm-es-telemetry-preview.svg",
+      "caption": "Simulated public visualization. It is not a live dashboard or a hardware-validation result."
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://juggerknot18.github.io/PM-ES/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Telemetry",
+          "item": "https://juggerknot18.github.io/PM-ES/telemetry/"
+        }
+      ]
+    }
+  ]
+}
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="brand" href="../" aria-label="PM-ES home">
+          <span class="brand-mark" aria-hidden="true">PM</span>
+          <span><strong>PM-ES</strong><small>Power Management - Electric System</small></span>
+        </a>
+        <button class="menu-button" type="button" aria-controls="primary-navigation" aria-expanded="false">
+          <span class="menu-lines" aria-hidden="true"></span>
+          <span class="visually-hidden">Toggle navigation</span>
+        </button>
+        <nav id="primary-navigation" class="primary-nav" aria-label="Primary navigation">
+          <a href="../">Home</a>
+          <a href="../research/">Research</a>
+          <a href="../architecture/">Architecture</a>
+          <a href="../systems/">Systems</a>
+          <a href="../telemetry/" aria-current="page">Telemetry</a>
+          <a href="../safety/">Safety</a>
+          <a href="../status/">Status</a>
+          <a href="../publications/">Publications</a>
+          <a href="../collaboration/">Collaboration</a>
+          <a href="../about/">About</a>
+          <a href="../contact/">Contact</a>
+        </nav>
+      </div>
+    </header>
+    <main id="main-content">
+      <section class="page-hero">
+        <p class="eyebrow">Monitoring interface · Public preview</p>
+        <h1>PM-ES telemetry</h1>
+        <p class="lead">A public, monitoring-only visualization of the Raspberry Pi companion interface for system observation, diagnostics and event review.</p>
+        <div class="notice caution"><strong>Simulation boundary.</strong> Every value shown in this public preview is illustrative simulated data. It is not a live connection, a bench measurement or a performance claim.</div>
+      </section>
+
+      <section class="content-band">
+        <figure class="telemetry-preview">
+          <img src="../assets/img/pm-es-telemetry-preview.svg" width="1600" height="900" loading="eager" alt="PM-ES public telemetry preview showing simulated system flow, motor speed, DC-bus observation, communication health, protection status and alarms.">
+          <figcaption>The public preview reproduces the information hierarchy and monitoring intent of the private dashboard without publishing its backend, protocol implementation, hardware mappings or control paths.</figcaption>
+        </figure>
+      </section>
+
+      <section class="content-band">
+        <div class="section-heading">
+          <p class="eyebrow">Observation scope</p>
+          <h2>What the interface is designed to surface</h2>
+        </div>
+        <ul class="telemetry-list">
+          <li>DC-bus condition and high-level protection status;</li>
+          <li>target, commanded and measured motor-speed trends;</li>
+          <li>encoder health and mechanical-reference validity;</li>
+          <li>controller and telemetry-link availability;</li>
+          <li>active alarms, event history and diagnostic counters;</li>
+          <li>clear separation between monitoring and future control functions.</li>
+        </ul>
+      </section>
+
+      <section class="content-band">
+        <div class="section-heading">
+          <p class="eyebrow">Publication boundary</p>
+          <h2>Public visualization, private implementation</h2>
+        </div>
+        <div class="boundary-grid">
+          <article>
+            <h3>Published</h3>
+            <p>The monitoring categories, safety philosophy, validation status and a sanitized visual preview.</p>
+          </article>
+          <article>
+            <h3>Not published</h3>
+            <p>The private application source, binary frame layout, pin assignments, exact protection thresholds, credentials and deployment configuration.</p>
+          </article>
+          <article>
+            <h3>Current authority</h3>
+            <p>The Raspberry Pi remains a monitoring companion in the current public scope. Autonomous hardware protection is not delegated to the dashboard.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="cta-band">
+        <h2>Technical review and collaboration are welcome</h2>
+        <p>Feedback on observability, diagnostic presentation, experimental methodology and human-machine interface design is welcome within the public project boundary.</p>
+        <div class="actions">
+          <a class="button primary" href="../contact/">Contact PM-ES</a>
+          <a class="button secondary" href="../architecture/">Review system architecture</a>
+        </div>
+      </section>
+
+      <section class="related-links">
+        <h2>Related pages</h2>
+        <a href="../systems/">System breakdown</a>
+        <a href="../safety/">Safety boundary</a>
+        <a href="../status/">Development status</a>
+      </section>
+    </main>
+    <footer class="site-footer">
+      <div class="footer-grid">
+        <div>
+          <p class="footer-title">PM-ES</p>
+          <p>Independent engineering research project in France exploring permanent-magnet systems, power electronics, embedded supervision and regenerative energy management.</p>
+          <p class="fine-print">No cookies. No tracking.</p>
+        </div>
+        <nav aria-label="Footer navigation" class="footer-links">
+          <a href="../">Home</a>
+          <a href="../research/">Research</a>
+          <a href="../architecture/">Architecture</a>
+          <a href="../systems/">Systems</a>
+          <a href="../telemetry/" aria-current="page">Telemetry</a>
+          <a href="../safety/">Safety</a>
+          <a href="../status/">Status</a>
+          <a href="../publications/">Publications</a>
+          <a href="../collaboration/">Collaboration</a>
+          <a href="../about/">About</a>
+          <a href="../contact/">Contact</a>
+          <a href="../policy/">Public content policy</a>
+        </nav>
+        <div>
+          <p class="footer-title">Public contact</p>
+          <p><a href="mailto:research.pmes@gmail.com">research.pmes@gmail.com</a></p>
+          <p><a href="https://github.com/Juggerknot18" rel="noopener noreferrer">GitHub profile</a></p>
+          <p>Last updated <time datetime="2026-07-11">2026-07-11</time></p>
+        </div>
+      </div>
+    </footer>
+    <script src="../assets/js/progressive.js" defer></script>
+  </body>
+</html>
