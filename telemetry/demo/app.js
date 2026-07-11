@@ -1,18 +1,344 @@
-/* PM-ES public telemetry demo frontend. */
+/* PM-ES Dashboard — frontend vanilla JS (aucune dépendance externe).
+ * WebSocket temps réel, jauges SVG, graphiques canvas maison, timeline.
+ * Léger par construction : rendu piloté par les messages (10 Hz). */
+
 "use strict";
-const C={ok:"#3ED598",warn:"#E8A33D",fault:"#F0564A",info:"#5FA8D3",copper:"#C97E45",copperHi:"#E8A164",muted:"#7C8BA1",dim:"#4A576B",grid:"#16202f"};
-const LEVEL_COLOR=[C.ok,C.warn,C.warn,C.fault,C.fault];
-const $=id=>document.getElementById(id);
-class Gauge{constructor(el,opts){this.o=Object.assign({min:0,max:100,unit:"",label:"",decimals:0,zones:null,sub:""},opts);el.innerHTML=`<svg viewBox="0 0 120 108"><path class="track" pathLength="100" d="${this._arc()}"/><path class="arc" pathLength="100" d="${this._arc()}" stroke-dasharray="0 100"/><text class="g-val" x="60" y="60" text-anchor="middle">—</text><text class="g-unit" x="60" y="74" text-anchor="middle">${this.o.unit}</text><text class="g-sub" x="60" y="100" text-anchor="middle">${this.o.sub}</text></svg><span class="label">${this.o.label}</span>`;this.arc=el.querySelector(".arc");this.val=el.querySelector(".g-val");this.sub=el.querySelector(".g-sub")}_arc(){const a=deg=>{const r=(deg-90)*Math.PI/180;return`${60+46*Math.cos(r)} ${58+46*Math.sin(r)}`};return`M ${a(-135)} A 46 46 0 1 1 ${a(135)}`}set(value,colorOverride,subText){const{min,max,zones,decimals}=this.o;const pct=Math.max(0,Math.min(1,(value-min)/(max-min)))*100;let color=colorOverride;if(!color&&zones){color=C.ok;for(const[thr,col]of zones)if(value>=thr)color=col}this.arc.setAttribute("stroke-dasharray",`${pct} ${100-pct}`);this.arc.style.stroke=color||C.info;this.val.textContent=Number(value).toFixed(decimals);if(subText!==undefined)this.sub.textContent=subText}setText(text,color,subText){this.arc.setAttribute("stroke-dasharray","100 0");this.arc.style.stroke=color;this.val.textContent=text;if(subText!==undefined)this.sub.textContent=subText}}
-class Chart{constructor(canvas,series,opts){this.cv=canvas;this.ctx=canvas.getContext("2d");this.series=series;this.o=Object.assign({window:60,minSpan:1},opts);this.data={t:[]};series.forEach(s=>this.data[s.key]=[]);new ResizeObserver(()=>this.draw()).observe(canvas)}seed(history){this.data.t=[...(history.t||[])];this.series.forEach(s=>this.data[s.key]=[...(history[s.key]||[])]);this.draw()}push(t,frame){this.data.t.push(t);this.series.forEach(s=>this.data[s.key].push(frame[s.key]));const cutoff=t-this.o.window-5;while(this.data.t.length&&this.data.t[0]<cutoff){this.data.t.shift();this.series.forEach(s=>this.data[s.key].shift())}this.draw()}clear(){this.data.t=[];this.series.forEach(s=>this.data[s.key]=[]);this.draw()}draw(){const cv=this.cv,ctx=this.ctx,dpr=window.devicePixelRatio||1,w=cv.clientWidth,h=cv.clientHeight;if(!w||!h)return;if(cv.width!==w*dpr){cv.width=w*dpr;cv.height=h*dpr}ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,w,h);const T=this.data.t,now=T.length?T[T.length-1]:0,t0=now-this.o.window,padL=44,padR=8,padT=6,padB=16,pw=w-padL-padR,ph=h-padT-padB;let lo=Infinity,hi=-Infinity;this.series.forEach(s=>this.data[s.key].forEach((v,i)=>{if(T[i]>=t0){if(v<lo)lo=v;if(v>hi)hi=v}}));if(!isFinite(lo)){lo=0;hi=1}const span=Math.max(hi-lo,this.o.minSpan);lo-=span*.08;hi=lo+span*1.16;const X=t=>padL+(t-t0)/this.o.window*pw,Y=v=>padT+(1-(v-lo)/(hi-lo))*ph;ctx.font="9.5px ui-monospace,Consolas,monospace";ctx.fillStyle=C.dim;ctx.strokeStyle=C.grid;ctx.lineWidth=1;for(let i=0;i<=4;i++){const v=lo+(hi-lo)*i/4,y=Y(v);ctx.beginPath();ctx.moveTo(padL,y);ctx.lineTo(w-padR,y);ctx.stroke();ctx.fillText(this._fmt(v),4,y+3)}for(let s=0;s<=this.o.window;s+=15){const x=X(t0+s);ctx.fillText(`-${this.o.window-s}s`,x-8,h-4)}this.series.forEach(s=>{const D=this.data[s.key];ctx.beginPath();let started=false;for(let i=0;i<D.length;i++){if(T[i]<t0)continue;const x=X(T[i]),y=Y(D[i]);started?ctx.lineTo(x,y):(ctx.moveTo(x,y),started=true)}ctx.strokeStyle=s.color;ctx.lineWidth=s.width||1.7;ctx.stroke();if(started){const x=X(T[T.length-1]),y=Y(D[D.length-1]);ctx.beginPath();ctx.arc(x,y,2.6,0,7);ctx.fillStyle=s.color;ctx.fill()}})}_fmt(v){const a=Math.abs(v);return a>=1000?(v/1000).toFixed(1)+"k":a>=10?v.toFixed(0):v.toFixed(1)}}
-const gauges={vbus:new Gauge($("g-vbus"),{min:0,max:100,unit:"%",label:"DC link",decimals:1,sub:"relative level",zones:[[0,C.ok],[76,C.warn],[90,C.fault]]}),rpm:new Gauge($("g-rpm"),{min:0,max:1000,unit:"rpm",label:"Measured speed",sub:"illustrative encoder",zones:[[0,C.info],[1001,C.fault]]}),cmd:new Gauge($("g-cmd"),{min:0,max:1000,unit:"rpm",label:"Commanded speed",sub:"supervisor ramp",zones:[[0,C.copper]]}),brake:new Gauge($("g-brake"),{min:0,max:4,unit:"",label:"Protection",decimals:0,sub:""}),can:new Gauge($("g-can"),{min:0,max:1,unit:"",label:"Controller link"}),spi:new Gauge($("g-spi"),{min:0,max:12,unit:"Hz",label:"Demo update",decimals:1,sub:"browser generated"})};
-const chVbus=new Chart($("ch-vbus"),[{key:"dc_link_pct",label:"relative level",color:C.info,width:2}],{minSpan:8});
-const chRpm=new Chart($("ch-rpm"),[{key:"speed_filtered",label:"measured (filtered)",color:C.info,width:2},{key:"speed_raw",label:"measured (raw)",color:C.dim},{key:"commanded_rpm",label:"commanded",color:C.copperHi},{key:"target_rpm",label:"target",color:C.ok}],{minSpan:50});
-const chErr=new Chart($("ch-err"),[{key:"controller_alerts",label:"controller alerts",color:C.fault},{key:"encoder_alerts",label:"encoder alerts",color:C.warn},{key:"reference_rejections",label:"reference rejections",color:C.info},{key:"protection_events",label:"protection events",color:C.copper}],{minSpan:4});
-function legend(el,chart){el.innerHTML=chart.series.map(s=>`<span><i style="background:${s.color}"></i>${s.label}</span>`).join("")}legend($("lg-rpm"),chRpm);legend($("lg-err"),chErr);
-function setBadge(el,txt,cls){el.textContent=txt;el.className="badge "+cls}function setNode(id,cls){$(id).setAttribute("class","node "+cls)}
-function render(snap){const f=snap.frame,st=snap.stats;setBadge($("b-spi"),st.link_online?"DATA LINK ONLINE":"DATA LINK OFFLINE",st.link_online?"ok":"fault");setBadge($("b-mode"),"PUBLIC DEMO","mode");$("btn-sim").textContent=`Scenario: ${st.scenario}`;$("btn-sim").classList.add("on");if(f){setBadge($("b-fesc"),f.controller_online?"CONTROLLER ONLINE":"CONTROLLER OFFLINE",f.controller_online?"ok":"fault");setBadge($("b-enc"),f.encoder_healthy?"ENCODER OK":"ENCODER ALERT",f.encoder_healthy?"ok":"fault");setBadge($("b-index"),f.reference_valid?"REFERENCE VALID":"REFERENCE PENDING",f.reference_valid?"ok":"warn");const plc=["ok","warn","warn","fault","fault"][f.protection_level];setBadge($("b-brake"),"PROTECTION "+f.protection_level_txt,plc);setBadge($("b-motor"),"MACHINE "+f.motor_state_txt,f.motor_state_txt==="FAULT"?"fault":f.motor_state_txt==="RUNNING"?"ok":f.motor_state_txt==="LIMITED"?"warn":"info");gauges.vbus.set(f.dc_link_pct);gauges.rpm.set(Math.abs(f.measured_rpm),null,f.measured_rpm<0?"reverse direction":"illustrative encoder");gauges.cmd.set(Math.abs(f.commanded_rpm),C.copperHi,`target ${f.target_rpm}`);gauges.brake.set(f.protection_level,LEVEL_COLOR[f.protection_level],f.protection_level_txt);gauges.can.setText(f.controller_online?"ON":"OFF",f.controller_online?C.ok:C.fault,`alerts ${f.controller_alerts}`);$("sy-vbus").textContent=f.dc_link_pct.toFixed(1)+" %";$("sy-fesc").textContent=f.controller_online?f.motor_state_txt:"OFFLINE";$("sy-rpm").textContent=f.measured_rpm+" rpm";$("sy-enc").textContent=f.reference_valid?"VALID ✓":"PENDING";$("sy-brake").textContent=f.protection_active?"ACTIVE · DISSIPATING":f.protection_level_txt;setNode("nd-bus",f.dc_link_pct>=90?"fault":f.dc_link_pct>=76?"warn":"ok");setNode("nd-fsesc",!f.controller_online||f.motor_state_txt==="FAULT"?"fault":"ok");setNode("nd-motor",f.motor_state_txt==="FAULT"?"fault":f.motor_state_txt==="LIMITED"?"warn":"ok");setNode("nd-enc","small "+(!f.encoder_healthy?"fault":f.reference_valid?"ok":"warn"));setNode("nd-brake","small "+(f.protection_level>=3?"fault":f.protection_level>=1?"warn":"ok"));const running=["STARTING","RUNNING","LIMITED","STOPPING","REFERENCE SEARCH"].includes(f.motor_state_txt);$("lk-bus-fsesc").setAttribute("class","link power"+(running?" flow":""));$("lk-fsesc-mot").setAttribute("class","link power"+(running?" flow":""));$("lk-bus-brake").setAttribute("class","link dump"+(f.protection_active?" hot":""));$("lk-mot-enc").setAttribute("class","link signal"+(Math.abs(f.measured_rpm)>5?" live":""));$("lk-can").setAttribute("class","link signal dashed"+(f.controller_online?" live":""));const t=st.last_valid_ts;chVbus.push(t,f);chRpm.push(t,f);chErr.push(t,f);renderDetail(f)}gauges.spi.set(st.update_hz||0,st.link_online?C.ok:C.fault,"public simulation");const al=$("alarms");$("alarm-count").textContent=snap.alarms.length;$("alarm-count").className="pill"+(snap.alarms.length?" hot":"");al.innerHTML=snap.alarms.length?snap.alarms.map(a=>`<li class="${a.level}">${a.msg}</li>`).join(""):`<li class="empty">No active alarm — illustrative nominal state</li>`;$("events").innerHTML=[...snap.events].reverse().map(e=>{const d=new Date(e.ts*1000),ts=d.toTimeString().slice(0,8);return`<li class="${e.level}"><span class="e-ts">${ts}</span><span class="e-src">${e.source}</span><span class="e-msg">${e.msg}</span></li>`}).join("");$("s-mode").textContent="PUBLIC SIMULATION";$("s-frames").textContent=`${st.sample_valid}/${st.sample_total}`;$("s-crc").textContent=st.data_check;$("s-io").textContent=st.demo_event_count;$("s-hz").textContent=(st.update_hz||0)+" Hz";$("s-lat").textContent=st.render_latency_ms+" ms";$("s-seq").textContent=st.scenario.toUpperCase();$("s-age").textContent=st.last_valid_ts?(Date.now()/1000-st.last_valid_ts).toFixed(1)+" s":"—";const check=$("s-crcok");check.textContent="ILLUSTRATIVE DATA";check.className="crc-badge ok"}
-const DETAIL_MAP=[["— PROTECTION —",null],["State / level",f=>`${f.protection_state_txt} / ${f.protection_level_txt}`],["Energy path",f=>f.protection_active?"active (illustrative)":"standby"],["Events / recent window",f=>`${f.protection_events} / ${f.protection_window_events}`],["Last illustrative duration",f=>`${f.last_event_duration_ms} ms`],["Thermal status",f=>f.thermal_status],["— ENCODER —",null],["Reference",f=>f.reference_valid?"valid":"pending"],["Speed filtered / raw",f=>`${f.speed_filtered} / ${f.speed_raw} rpm`],["Reference rejections",f=>f.reference_rejections],["Encoder alerts",f=>f.encoder_alerts],["— MACHINE / CONTROLLER —",null],["Machine state",f=>f.motor_state_txt],["Target / command / measured",f=>`${f.target_rpm} / ${f.commanded_rpm} / ${f.measured_rpm}`],["Controller status",f=>f.controller_online?"online":"offline"],["Controller alerts",f=>f.controller_alerts]];
-function renderDetail(f){$("detail").innerHTML=DETAIL_MAP.map(([k,fn])=>fn===null?`<span class="sep">${k}</span>`:`<span class="k">${k}</span><span class="v">${fn(f)}</span>`).join("")}
-let ws,wsRetry=500;function connect(){const proto=location.protocol==="https:"?"wss":"ws";ws=new WebSocket(`${proto}://${location.host}/public-demo-stream`);ws.onmessage=ev=>{const msg=JSON.parse(ev.data);if(msg.history){chVbus.seed(msg.history);chRpm.seed(msg.history);chErr.seed(msg.history);return}render(msg)};ws.onopen=()=>{wsRetry=500};ws.onclose=()=>{setBadge($("b-spi"),"PUBLIC DEMO OFFLINE","fault");setTimeout(connect,wsRetry);wsRetry=Math.min(wsRetry*2,5000)}}connect();
-$("btn-sim").onclick=async()=>{await fetch("demo-api/scenario",{method:"POST"})};$("btn-reset").onclick=async()=>{await fetch("demo-api/reset-graphs",{method:"POST"});chVbus.clear();chRpm.clear();chErr.clear()};$("btn-csv").onclick=()=>window.dispatchEvent(new CustomEvent("pm-es-export-csv"));$("btn-log").onclick=()=>window.dispatchEvent(new CustomEvent("pm-es-export-log"));$("btn-kiosk").onclick=()=>{document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()};
+
+const C = {
+  ok: "#3ED598", warn: "#E8A33D", fault: "#F0564A", info: "#5FA8D3",
+  copper: "#C97E45", copperHi: "#E8A164", muted: "#7C8BA1", dim: "#4A576B",
+  grid: "#16202f",
+};
+const LEVEL_COLOR = [C.ok, C.warn, C.warn, C.fault, C.fault];
+const $ = (id) => document.getElementById(id);
+
+/* ======================= Jauge SVG (arc 270°) ======================= */
+class Gauge {
+  constructor(el, opts) {
+    this.o = Object.assign({ min: 0, max: 100, unit: "", label: "",
+                             decimals: 0, zones: null, sub: "" }, opts);
+    el.innerHTML = `
+      <svg viewBox="0 0 120 108">
+        <path class="track" pathLength="100" d="${this._arc()}"/>
+        <path class="arc"   pathLength="100" d="${this._arc()}"
+              stroke-dasharray="0 100"/>
+        <text class="g-val"  x="60" y="60" text-anchor="middle">—</text>
+        <text class="g-unit" x="60" y="74" text-anchor="middle">${this.o.unit}</text>
+        <text class="g-sub"  x="60" y="100" text-anchor="middle">${this.o.sub}</text>
+      </svg>
+      <span class="label">${this.o.label}</span>`;
+    this.arc = el.querySelector(".arc");
+    this.val = el.querySelector(".g-val");
+    this.sub = el.querySelector(".g-sub");
+  }
+  _arc() { // arc 270° : -225° -> +45°, centre (60,58), rayon 46
+    const a = (deg) => {
+      const r = (deg - 90) * Math.PI / 180;
+      return `${60 + 46 * Math.cos(r)} ${58 + 46 * Math.sin(r)}`;
+    };
+    return `M ${a(-135)} A 46 46 0 1 1 ${a(135)}`;
+  }
+  set(value, colorOverride, subText) {
+    const { min, max, zones, decimals } = this.o;
+    const pct = Math.max(0, Math.min(1, (value - min) / (max - min))) * 100;
+    let color = colorOverride;
+    if (!color && zones) {
+      color = C.ok;
+      for (const [thr, col] of zones) if (value >= thr) color = col;
+    }
+    this.arc.setAttribute("stroke-dasharray", `${pct} ${100 - pct}`);
+    this.arc.style.stroke = color || C.info;
+    this.val.textContent = Number(value).toFixed(decimals);
+    if (subText !== undefined) this.sub.textContent = subText;
+  }
+  setText(text, color, subText) {
+    this.arc.setAttribute("stroke-dasharray", "100 0");
+    this.arc.style.stroke = color;
+    this.val.textContent = text;
+    if (subText !== undefined) this.sub.textContent = subText;
+  }
+}
+
+/* ======================= Graphique canvas ======================= */
+class Chart {
+  constructor(canvas, series, opts) {
+    this.cv = canvas; this.ctx = canvas.getContext("2d");
+    this.series = series;                 // [{key,label,color,width?}]
+    this.o = Object.assign({ window: 60, minSpan: 1 }, opts);
+    this.data = { t: [] };
+    series.forEach(s => this.data[s.key] = []);
+    new ResizeObserver(() => this.draw()).observe(canvas);
+  }
+  seed(history) {
+    this.data.t = [...(history.t || [])];
+    this.series.forEach(s => this.data[s.key] = [...(history[s.key] || [])]);
+    this.draw();
+  }
+  push(t, frame) {
+    this.data.t.push(t);
+    this.series.forEach(s => this.data[s.key].push(frame[s.key]));
+    const cutoff = t - this.o.window - 5;
+    while (this.data.t.length && this.data.t[0] < cutoff) {
+      this.data.t.shift();
+      this.series.forEach(s => this.data[s.key].shift());
+    }
+    this.draw();
+  }
+  clear() {
+    this.data.t = [];
+    this.series.forEach(s => this.data[s.key] = []);
+    this.draw();
+  }
+  draw() {
+    const cv = this.cv, ctx = this.ctx;
+    const dpr = window.devicePixelRatio || 1;
+    const w = cv.clientWidth, h = cv.clientHeight;
+    if (!w || !h) return;
+    if (cv.width !== w * dpr) { cv.width = w * dpr; cv.height = h * dpr; }
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, w, h);
+
+    const T = this.data.t;
+    const now = T.length ? T[T.length - 1] : 0;
+    const t0 = now - this.o.window;
+    const padL = 44, padR = 8, padT = 6, padB = 16;
+    const pw = w - padL - padR, ph = h - padT - padB;
+
+    // Échelle Y auto sur les points visibles
+    let lo = Infinity, hi = -Infinity;
+    this.series.forEach(s => this.data[s.key].forEach((v, i) => {
+      if (T[i] >= t0) { if (v < lo) lo = v; if (v > hi) hi = v; }
+    }));
+    if (!isFinite(lo)) { lo = 0; hi = 1; }
+    const span = Math.max(hi - lo, this.o.minSpan);
+    lo -= span * 0.08; hi = lo + span * 1.16;
+
+    const X = (t) => padL + (t - t0) / this.o.window * pw;
+    const Y = (v) => padT + (1 - (v - lo) / (hi - lo)) * ph;
+
+    // Grille + graduations
+    ctx.font = "9.5px ui-monospace,Consolas,monospace";
+    ctx.fillStyle = C.dim; ctx.strokeStyle = C.grid; ctx.lineWidth = 1;
+    for (let i = 0; i <= 4; i++) {
+      const v = lo + (hi - lo) * i / 4, y = Y(v);
+      ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(w - padR, y); ctx.stroke();
+      ctx.fillText(this._fmt(v), 4, y + 3);
+    }
+    for (let s = 0; s <= this.o.window; s += 15) {
+      const x = X(t0 + s);
+      ctx.fillText(`-${this.o.window - s}s`, x - 8, h - 4);
+    }
+
+    // Séries
+    this.series.forEach(s => {
+      const D = this.data[s.key];
+      ctx.beginPath();
+      let started = false;
+      for (let i = 0; i < D.length; i++) {
+        if (T[i] < t0) continue;
+        const x = X(T[i]), y = Y(D[i]);
+        started ? ctx.lineTo(x, y) : (ctx.moveTo(x, y), started = true);
+      }
+      ctx.strokeStyle = s.color;
+      ctx.lineWidth = s.width || 1.7;
+      ctx.stroke();
+      if (started) {                       // point courant
+        const x = X(T[T.length - 1]), y = Y(D[D.length - 1]);
+        ctx.beginPath(); ctx.arc(x, y, 2.6, 0, 7); ctx.fillStyle = s.color; ctx.fill();
+      }
+    });
+  }
+  _fmt(v) {
+    const a = Math.abs(v);
+    return a >= 1000 ? (v / 1000).toFixed(1) + "k"
+         : a >= 10 ? v.toFixed(0) : v.toFixed(1);
+  }
+
+}
+
+/* ======================= Public demo widgets ======================= */
+const gauges = {
+  vbus: new Gauge($("g-vbus"), { min: 0, max: 70, unit: "V", label: "DC link",
+    decimals: 1, sub: "illustrative voltage" }),
+  rpm: new Gauge($("g-rpm"), { min: 0, max: 1000, unit: "rpm", label: "Measured speed",
+    sub: "illustrative encoder", zones: [[0, C.info], [1001, C.fault]] }),
+  cmd: new Gauge($("g-cmd"), { min: 0, max: 1000, unit: "rpm", label: "Commanded speed",
+    sub: "supervisor ramp", zones: [[0, C.copper]] }),
+  brake: new Gauge($("g-brake"), { min: 0, max: 4, unit: "", label: "Protection",
+    decimals: 0, sub: "" }),
+  can: new Gauge($("g-can"), { min: 0, max: 1, unit: "", label: "Controller link" }),
+  spi: new Gauge($("g-spi"), { min: 0, max: 12, unit: "Hz", label: "Demo update",
+    decimals: 1, sub: "browser generated" }),
+};
+
+const chVbus = new Chart($("ch-vbus"),
+  [{ key: "dc_link_v", label: "DC-link voltage", color: C.info, width: 2 }],
+  { minSpan: 2 });
+const chRpm = new Chart($("ch-rpm"), [
+  { key: "speed_filtered", label: "measured (filtered)", color: C.info, width: 2 },
+  { key: "speed_raw", label: "measured (raw)", color: C.dim },
+  { key: "commanded_rpm", label: "commanded", color: C.copperHi },
+  { key: "target_rpm", label: "target", color: C.ok },
+], { minSpan: 50 });
+const chErr = new Chart($("ch-err"), [
+  { key: "controller_alerts", label: "controller alerts", color: C.fault },
+  { key: "encoder_alerts", label: "encoder alerts", color: C.warn },
+  { key: "reference_rejections", label: "reference rejections", color: C.info },
+  { key: "protection_events", label: "protection events", color: C.copper },
+], { minSpan: 4 });
+
+function legend(el, chart) {
+  el.innerHTML = chart.series.map(s =>
+    `<span><i style="background:${s.color}"></i>${s.label}</span>`).join("");
+}
+legend($("lg-rpm"), chRpm);
+legend($("lg-err"), chErr);
+
+function setBadge(el, txt, cls) { el.textContent = txt; el.className = "badge " + cls; }
+function setNode(id, cls) { $(id).setAttribute("class", "node " + cls); }
+
+function render(snap) {
+  const f = snap.frame, st = snap.stats;
+
+  setBadge($("b-spi"), st.link_online ? "DATA LINK ONLINE" : "DATA LINK OFFLINE",
+    st.link_online ? "ok" : "fault");
+  setBadge($("b-mode"), "PUBLIC DEMO", "mode");
+  $("btn-sim").textContent = `Scenario: ${st.scenario}`;
+  $("btn-sim").classList.add("on");
+
+  if (f) {
+    setBadge($("b-fesc"), f.controller_online ? "CONTROLLER ONLINE" : "CONTROLLER OFFLINE",
+      f.controller_online ? "ok" : "fault");
+    setBadge($("b-enc"), f.encoder_healthy ? "ENCODER OK" : "ENCODER ALERT",
+      f.encoder_healthy ? "ok" : "fault");
+    setBadge($("b-index"), f.reference_valid ? "REFERENCE VALID" : "REFERENCE PENDING",
+      f.reference_valid ? "ok" : "warn");
+    const plc = ["ok", "warn", "warn", "fault", "fault"][f.protection_level];
+    setBadge($("b-brake"), "PROTECTION " + f.protection_level_txt, plc);
+    setBadge($("b-motor"), "MACHINE " + f.motor_state_txt,
+      f.motor_state_txt === "FAULT" ? "fault" :
+      f.motor_state_txt === "RUNNING" ? "ok" :
+      f.motor_state_txt === "LIMITED" ? "warn" : "info");
+
+    const dcColor = f.dc_link_state === "active" ? C.fault :
+      f.dc_link_state === "elevated" ? C.warn : C.ok;
+    gauges.vbus.set(f.dc_link_v, dcColor);
+    gauges.rpm.set(Math.abs(f.measured_rpm), null,
+      f.measured_rpm < 0 ? "reverse direction" : "illustrative encoder");
+    gauges.cmd.set(Math.abs(f.commanded_rpm), C.copperHi, `target ${f.target_rpm}`);
+    gauges.brake.set(f.protection_level, LEVEL_COLOR[f.protection_level], f.protection_level_txt);
+    gauges.can.setText(f.controller_online ? "ON" : "OFF",
+      f.controller_online ? C.ok : C.fault, `alerts ${f.controller_alerts}`);
+
+    $("sy-vbus").textContent = f.dc_link_v.toFixed(1) + " V";
+    $("sy-fesc").textContent = f.controller_online ? f.motor_state_txt : "OFFLINE";
+    $("sy-rpm").textContent = f.measured_rpm + " rpm";
+    $("sy-enc").textContent = f.reference_valid ? "VALID ✓" : "PENDING";
+    $("sy-brake").textContent = f.protection_active ? "ACTIVE · DISSIPATING" : f.protection_level_txt;
+
+    setNode("nd-bus", f.dc_link_state === "active" ? "fault" : f.dc_link_state === "elevated" ? "warn" : "ok");
+    setNode("nd-fsesc", !f.controller_online || f.motor_state_txt === "FAULT" ? "fault" : "ok");
+    setNode("nd-motor", f.motor_state_txt === "FAULT" ? "fault" :
+      f.motor_state_txt === "LIMITED" ? "warn" : "ok");
+    setNode("nd-enc", "small " + (!f.encoder_healthy ? "fault" : f.reference_valid ? "ok" : "warn"));
+    setNode("nd-brake", "small " +
+      (f.protection_level >= 3 ? "fault" : f.protection_level >= 1 ? "warn" : "ok"));
+
+    const running = ["STARTING", "RUNNING", "LIMITED", "STOPPING", "REFERENCE SEARCH"].includes(f.motor_state_txt);
+    $("lk-bus-fsesc").setAttribute("class", "link power" + (running ? " flow" : ""));
+    $("lk-fsesc-mot").setAttribute("class", "link power" + (running ? " flow" : ""));
+    $("lk-bus-brake").setAttribute("class", "link dump" + (f.protection_active ? " hot" : ""));
+    $("lk-mot-enc").setAttribute("class", "link signal" + (Math.abs(f.measured_rpm) > 5 ? " live" : ""));
+    $("lk-can").setAttribute("class", "link signal dashed" + (f.controller_online ? " live" : ""));
+
+    const t = st.last_valid_ts;
+    chVbus.push(t, f); chRpm.push(t, f); chErr.push(t, f);
+    renderDetail(f);
+  }
+
+  gauges.spi.set(st.update_hz || 0, st.link_online ? C.ok : C.fault, "public simulation");
+
+  const al = $("alarms");
+  $("alarm-count").textContent = snap.alarms.length;
+  $("alarm-count").className = "pill" + (snap.alarms.length ? " hot" : "");
+  al.innerHTML = snap.alarms.length
+    ? snap.alarms.map(a => `<li class="${a.level}">${a.msg}</li>`).join("")
+    : `<li class="empty">No active alarm — illustrative nominal state</li>`;
+
+  $("events").innerHTML = [...snap.events].reverse().map(e => {
+    const d = new Date(e.ts * 1000);
+    const ts = d.toTimeString().slice(0, 8);
+    return `<li class="${e.level}"><span class="e-ts">${ts}</span>` +
+      `<span class="e-src">${e.source}</span>` +
+      `<span class="e-msg">${e.msg}</span></li>`;
+  }).join("");
+
+  $("s-mode").textContent = "PUBLIC SIMULATION";
+  $("s-frames").textContent = `${st.sample_valid}/${st.sample_total}`;
+  $("s-crc").textContent = st.data_check;
+  $("s-io").textContent = st.demo_event_count;
+  $("s-hz").textContent = (st.update_hz || 0) + " Hz";
+  $("s-lat").textContent = st.render_latency_ms + " ms";
+  $("s-seq").textContent = st.scenario.toUpperCase();
+  $("s-age").textContent = st.last_valid_ts
+    ? ((Date.now() / 1000 - st.last_valid_ts).toFixed(1) + " s") : "—";
+  const check = $("s-crcok");
+  check.textContent = "ILLUSTRATIVE DATA";
+  check.className = "crc-badge ok";
+}
+
+const DETAIL_MAP = [
+  ["— PROTECTION —", null],
+  ["State / level", f => `${f.protection_state_txt} / ${f.protection_level_txt}`],
+  ["Energy path", f => f.protection_active ? "active (illustrative)" : "standby"],
+  ["Events / recent window", f => `${f.protection_events} / ${f.protection_window_events}`],
+  ["Last illustrative duration", f => `${f.last_event_duration_ms} ms`],
+  ["Thermal status", f => f.thermal_status],
+  ["— ENCODER —", null],
+  ["Reference", f => f.reference_valid ? "valid" : "pending"],
+  ["Speed filtered / raw", f => `${f.speed_filtered} / ${f.speed_raw} rpm`],
+  ["Reference rejections", f => f.reference_rejections],
+  ["Encoder alerts", f => f.encoder_alerts],
+  ["— MACHINE / CONTROLLER —", null],
+  ["Machine state", f => f.motor_state_txt],
+  ["Target / command / measured", f => `${f.target_rpm} / ${f.commanded_rpm} / ${f.measured_rpm}`],
+  ["Controller status", f => f.controller_online ? "online" : "offline"],
+  ["Controller alerts", f => f.controller_alerts],
+];
+function renderDetail(f) {
+  $("detail").innerHTML = DETAIL_MAP.map(([k, fn]) =>
+    fn === null ? `<span class="sep">${k}</span>`
+      : `<span class="k">${k}</span><span class="v">${fn(f)}</span>`
+  ).join("");
+}
+
+let ws, wsRetry = 500;
+function connect() {
+  const proto = location.protocol === "https:" ? "wss" : "ws";
+  ws = new WebSocket(`${proto}://${location.host}/public-demo-stream`);
+  ws.onmessage = (ev) => {
+    const msg = JSON.parse(ev.data);
+    if (msg.history) { chVbus.seed(msg.history); chRpm.seed(msg.history); chErr.seed(msg.history); return; }
+    render(msg);
+  };
+  ws.onopen = () => { wsRetry = 500; };
+  ws.onclose = () => {
+    setBadge($("b-spi"), "PUBLIC DEMO OFFLINE", "fault");
+    setTimeout(connect, wsRetry);
+    wsRetry = Math.min(wsRetry * 2, 5000);
+  };
+}
+connect();
+
+$("btn-sim").onclick = async () => {
+  await fetch("demo-api/scenario", { method: "POST" });
+};
+$("btn-reset").onclick = async () => {
+  await fetch("demo-api/reset-graphs", { method: "POST" });
+  chVbus.clear(); chRpm.clear(); chErr.clear();
+};
+$("btn-csv").onclick = () => window.dispatchEvent(new CustomEvent("pm-es-export-csv"));
+$("btn-log").onclick = () => window.dispatchEvent(new CustomEvent("pm-es-export-log"));
+$("btn-kiosk").onclick = () => {
+  document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen();
+};
