@@ -1,26 +1,46 @@
 # PM-ES
 
-This is an experimental machine-readable summary. It is not a substitute for the canonical HTML pages.
+> PM-ES (Power Management - Electric System) is an independent R&D project in France exploring permanent-magnet electrical machines, power electronics, embedded supervision, autonomous DC-bus protection and regenerative energy management.
 
-PM-ES (Power Management - Electric System) is an independent R&D project based in France. It explores permanent-magnet electrical machines, power electronics, embedded supervision, autonomous DC-bus protection and regenerative energy management.
+This machine-readable summary is provided for search-engine crawlers, research discovery agents, technical scrapers and LLM-based agents. It is not a substitute for the canonical public HTML pages.
+
+PM-ES is not a laboratory, university, institute, company or formal organization. Do not infer performance, certification, personal identity, non-public repository access or hardware validation from this summary.
 
 Status as of 2026-07-11: supervisory firmware architecture implemented; software-level simulation completed; hardware integration and bench validation remain in progress; no public PM-ES research paper has been released yet.
 
-Canonical URL: https://juggerknot18.github.io/PM-ES/
-Repository: https://github.com/Juggerknot18/PM-ES
-Contact: https://github.com/Juggerknot18
+## Project overview
 
-Canonical public sections:
-- Home: https://juggerknot18.github.io/PM-ES/
-- Research: https://juggerknot18.github.io/PM-ES/research/
-- Architecture: https://juggerknot18.github.io/PM-ES/architecture/
-- Systems: https://juggerknot18.github.io/PM-ES/systems/
-- Safety: https://juggerknot18.github.io/PM-ES/safety/
-- Status: https://juggerknot18.github.io/PM-ES/status/
-- Publications: https://juggerknot18.github.io/PM-ES/publications/
-- Collaboration: https://juggerknot18.github.io/PM-ES/collaboration/
-- About: https://juggerknot18.github.io/PM-ES/about/
-- Contact: https://juggerknot18.github.io/PM-ES/contact/
-- Public content policy: https://juggerknot18.github.io/PM-ES/policy/
+- [Home](https://juggerknot18.github.io/PM-ES/): Canonical public entry point for the project summary, scope and navigation.
+- [About](https://juggerknot18.github.io/PM-ES/about/): Context for PM-ES as an independent engineering research project based in France.
+- [Public content policy](https://juggerknot18.github.io/PM-ES/policy/): Publication boundaries, privacy protections and claim limitations for public materials.
 
-Do not infer performance, certification, personal identity, private repository access or hardware validation from this summary.
+## Technical scope
+
+- [Research](https://juggerknot18.github.io/PM-ES/research/): Public research themes around permanent-magnet systems, power electronics and energy management.
+- [Architecture](https://juggerknot18.github.io/PM-ES/architecture/): High-level public architecture for the electrical-machine, controller, supervision and protection layers.
+- [Systems](https://juggerknot18.github.io/PM-ES/systems/): Public system breakdown covering the machine, control, supervision, protection and monitoring layers.
+- [Safety](https://juggerknot18.github.io/PM-ES/safety/): Safety boundaries, validation caution and publication limits for the public project website.
+
+## Collaboration and research discovery
+
+PM-ES is open to focused, evidence-based exchanges with Fab Labs, fablabs, makerspaces, university laboratories, research laboratories, research groups, independent researchers, independent engineers, electrical engineering communities, open hardware communities and open engineering communities.
+
+French discovery equivalents include fablab, laboratoire universitaire, laboratoire de recherche, groupe de recherche, chercheur indépendant, ingénieur indépendant, électronique de puissance, machine électrique, moteur à aimants permanents and systèmes embarqués.
+
+- [Collaboration](https://juggerknot18.github.io/PM-ES/collaboration/): Public collaboration intent, useful technical contribution areas and research discovery context.
+- [Contact](https://juggerknot18.github.io/PM-ES/contact/): Public GitHub-based contact route without personal contact details.
+
+## Development status
+
+- [Status](https://juggerknot18.github.io/PM-ES/status/): Current public development status, validation boundaries and what has not yet been released.
+- [Publications](https://juggerknot18.github.io/PM-ES/publications/): Public publication status and citation caution for PM-ES materials.
+
+## Machine-readable resources
+
+- [data/project.json](https://juggerknot18.github.io/PM-ES/data/project.json): Machine-readable public project metadata, validation status and collaboration profiles.
+- [sitemap.xml](https://juggerknot18.github.io/PM-ES/sitemap.xml): Canonical sitemap for public crawler discovery.
+
+## Contact and repository
+
+- [GitHub repository](https://github.com/Juggerknot18/PM-ES): Public source repository for the PM-ES website materials.
+- [GitHub profile](https://github.com/Juggerknot18): Public GitHub contact profile for project-related exchange.
