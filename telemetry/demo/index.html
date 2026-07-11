@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,follow">
+<title>PM-ES · Public telemetry demo</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-mark"></span>
+    <div>
+      <h1>PM-ES</h1>
+      <span class="brand-sub">Public monitoring demo · illustrative browser-generated data</span>
+    </div>
+  </div>
+
+  <div class="badges" id="badges">
+    <span class="badge" id="b-spi">DATA LINK —</span>
+    <span class="badge" id="b-fesc">CONTROLLER —</span>
+    <span class="badge" id="b-enc">ENCODER —</span>
+    <span class="badge" id="b-index">REFERENCE —</span>
+    <span class="badge" id="b-brake">PROTECTION —</span>
+    <span class="badge" id="b-motor">MACHINE —</span>
+    <span class="badge mode" id="b-mode">PUBLIC DEMO</span>
+  </div>
+
+  <div class="actions">
+    <button id="btn-sim" title="Cycle through illustrative public scenarios">Scenario: nominal</button>
+    <button id="btn-reset" title="Clear chart history">Reset graphs</button>
+    <button id="btn-csv" title="Export illustrative history">Export CSV</button>
+    <button id="btn-log" title="Download illustrative event log">Event log</button>
+    <button id="btn-kiosk" title="Full screen">Kiosk</button>
+  </div>
+</header>
+
+<section class="synoptic-wrap" aria-label="High-level system synoptic">
+<svg id="synoptic" viewBox="0 0 1200 190" preserveAspectRatio="xMidYMid meet">
+  <path id="lk-bus-fsesc" class="link power" d="M 275 80 H 455"/>
+  <path id="lk-fsesc-mot" class="link power" d="M 665 80 H 845"/>
+  <path id="lk-bus-brake" class="link dump" d="M 210 112 V 148 H 320"/>
+  <path id="lk-mot-enc" class="link signal" d="M 1000 80 H 1040"/>
+  <path id="lk-can" class="link signal dashed" d="M 560 48 V 22 H 210 V 48"/>
+
+  <g class="node" id="nd-bus" transform="translate(90,48)">
+    <rect width="185" height="64" rx="9"/>
+    <text class="nd-title" x="16" y="26">DC LINK</text>
+    <text class="nd-value" x="16" y="50" id="sy-vbus">— %</text>
+  </g>
+
+  <g class="node" id="nd-fsesc" transform="translate(455,48)">
+    <rect width="210" height="64" rx="9"/>
+    <text class="nd-title" x="16" y="26">FOC CONTROLLER</text>
+    <text class="nd-value" x="16" y="50" id="sy-fesc">—</text>
+  </g>
+
+  <g class="node" id="nd-motor" transform="translate(845,48)">
+    <rect width="155" height="64" rx="9"/>
+    <text class="nd-title" x="16" y="26">PM MACHINE</text>
+    <text class="nd-value" x="16" y="50" id="sy-rpm">— rpm</text>
+  </g>
+
+  <g class="node small" id="nd-enc" transform="translate(1040,48)">
+    <rect width="130" height="64" rx="9"/>
+    <text class="nd-title" x="14" y="26">ENCODER</text>
+    <text class="nd-value" x="14" y="50" id="sy-enc">—</text>
+  </g>
+
+  <g class="node small" id="nd-brake" transform="translate(320,120)">
+    <rect width="215" height="56" rx="9"/>
+    <text class="nd-title" x="14" y="23">ENERGY DISSIPATION</text>
+    <text class="nd-value" x="14" y="45" id="sy-brake">—</text>
+  </g>
+
+  <text class="sy-label" x="365" y="70">power path</text>
+  <text class="sy-label" x="330" y="14">supervision link</text>
+  <text class="sy-label" x="1002" y="70">feedback</text>
+</svg>
+</section>
+
+<section class="gauges" id="gauges">
+  <div class="gauge-card" id="g-vbus"></div>
+  <div class="gauge-card" id="g-rpm"></div>
+  <div class="gauge-card" id="g-cmd"></div>
+  <div class="gauge-card" id="g-brake"></div>
+  <div class="gauge-card" id="g-can"></div>
+  <div class="gauge-card" id="g-spi"></div>
+</section>
+
+<main class="grid">
+  <section class="panel chart-panel">
+    <header><h2>DC link</h2><span class="unit">relative level · 60 s window</span></header>
+    <canvas id="ch-vbus"></canvas>
+  </section>
+
+  <section class="panel side" id="alarm-panel">
+    <header><h2>Active alarms</h2><span class="pill" id="alarm-count">0</span></header>
+    <ul id="alarms" class="alarm-list"><li class="empty">No active alarm — illustrative nominal state</li></ul>
+  </section>
+
+  <section class="panel chart-panel">
+    <header><h2>Speed</h2><span class="unit">rpm · illustrative</span></header>
+    <div class="legend" id="lg-rpm"></div>
+    <canvas id="ch-rpm"></canvas>
+  </section>
+
+  <section class="panel side">
+    <header><h2>Timeline</h2><span class="unit">public demo events</span></header>
+    <ul id="events" class="event-list"></ul>
+  </section>
+
+  <section class="panel chart-panel">
+    <header><h2>Diagnostic counters</h2><span class="unit">illustrative totals</span></header>
+    <div class="legend" id="lg-err"></div>
+    <canvas id="ch-err"></canvas>
+  </section>
+
+  <section class="panel side detail" id="detail-panel">
+    <header><h2>Details</h2><span class="unit" id="detail-title">protection · encoder · machine</span></header>
+    <div class="detail-grid" id="detail"></div>
+  </section>
+</main>
+
+<section class="panel commands">
+  <header>
+    <h2>Control boundary</h2>
+    <span class="lock-tag">PUBLIC DEMO — MONITORING ONLY</span>
+  </header>
+  <p class="cmd-note">Control functions are intentionally unavailable. This page is a browser-only visualization with <strong>no hardware connection</strong>, no runtime API and no private protocol implementation.</p>
+  <div class="cmd-row">
+    <button disabled>▶ START</button>
+    <button disabled>■ STOP</button>
+    <div class="cmd-group">
+      <input type="number" disabled placeholder="300">
+      <button disabled>SET TARGET</button>
+    </div>
+    <button disabled>CLEAR FAULT</button>
+    <button disabled>REFERENCE SEARCH</button>
+  </div>
+</section>
+
+<footer class="spibar" id="spibar">
+  <span>SOURCE <b id="s-mode">—</b></span>
+  <span>SAMPLES <b id="s-frames">—</b></span>
+  <span>DATA CHECK <b id="s-crc">—</b></span>
+  <span>DEMO EVENTS <b id="s-io">—</b></span>
+  <span>UPDATE <b id="s-hz">—</b></span>
+  <span>RENDER <b id="s-lat">—</b></span>
+  <span>SCENARIO <b id="s-seq">—</b></span>
+  <span>LAST UPDATE <b id="s-age">—</b></span>
+  <span class="crc-badge" id="s-crcok">ILLUSTRATIVE DATA</span>
+</footer>
+
+<script src="demo_backend.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
