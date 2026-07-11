@@ -39,6 +39,7 @@ French discovery equivalents include fablab, laboratoire universitaire, laborato
 ## Machine-readable resources
 
 - [data/project.json](https://juggerknot18.github.io/PM-ES/data/project.json): Machine-readable public project metadata, validation status, telemetry preview and collaboration profiles.
+- [data/telemetry.json](https://juggerknot18.github.io/PM-ES/data/telemetry.json): Machine-readable public telemetry scope, simulation boundary, observability areas and contact route.
 - [sitemap.xml](https://juggerknot18.github.io/PM-ES/sitemap.xml): Canonical sitemap for public crawler discovery.
 
 ## Contact and repository
