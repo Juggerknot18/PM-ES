@@ -3,14 +3,14 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>PM-ES Telemetry | Public Monitoring Preview</title>
-    <meta name="description" content="Public PM-ES telemetry preview showing the monitoring scope for DC-bus observation, motor speed, encoder status, communication health and alarms using simulated data only.">
+    <title>PM-ES Telemetry | Interactive Public Demo</title>
+    <meta name="description" content="Interactive PM-ES monitoring preview showing high-level DC-link observation, motor-speed trends, encoder status, controller availability and alarms with illustrative browser-generated data only.">
     <meta name="robots" content="index,follow">
     <link rel="canonical" href="https://juggerknot18.github.io/PM-ES/telemetry/">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="PM-ES">
-    <meta property="og:title" content="PM-ES Telemetry | Public Monitoring Preview">
-    <meta property="og:description" content="A monitoring-only public visualization of the PM-ES telemetry interface using simulated data. No live control and no private implementation details.">
+    <meta property="og:title" content="PM-ES Telemetry | Interactive Public Demo">
+    <meta property="og:description" content="A monitoring-only interactive public demo using illustrative browser-generated data. No hardware connection, live control or private protocol implementation.">
     <meta property="og:url" content="https://juggerknot18.github.io/PM-ES/telemetry/">
     <meta property="og:image" content="https://juggerknot18.github.io/PM-ES/assets/img/pm-es-social-card.png">
     <meta property="og:image:secure_url" content="https://juggerknot18.github.io/PM-ES/assets/img/pm-es-social-card.png">
@@ -19,8 +19,8 @@
     <meta property="og:image:height" content="630">
     <meta property="og:image:alt" content="PM-ES social preview card with a dark technical architecture motif.">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="PM-ES Telemetry | Public Monitoring Preview">
-    <meta name="twitter:description" content="Monitoring-only public visualization using simulated data. No live control and no private dashboard source.">
+    <meta name="twitter:title" content="PM-ES Telemetry | Interactive Public Demo">
+    <meta name="twitter:description" content="Monitoring-only interactive visualization using illustrative browser-generated data. No hardware connection or live control.">
     <meta name="twitter:image" content="https://juggerknot18.github.io/PM-ES/assets/img/pm-es-social-card.png">
     <meta name="twitter:image:alt" content="PM-ES social preview card with a dark technical architecture motif.">
     <meta name="theme-color" content="#0B0F14">
@@ -28,9 +28,16 @@
     <link rel="icon" href="../favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="../assets/css/main.css">
     <style>
-      .telemetry-preview { margin: 0; }
-      .telemetry-preview img { display: block; width: 100%; height: auto; border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-surface); }
-      .telemetry-preview figcaption { color: var(--color-muted); margin-top: var(--space-3); max-width: var(--reading-max); }
+      .demo-shell { margin: 0; }
+      .demo-frame {
+        display: block;
+        width: 100%;
+        min-height: 1050px;
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-md);
+        background: #080c13;
+      }
+      .demo-actions { margin-top: var(--space-4); }
       .boundary-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-4); }
       .boundary-grid article { border: 1px solid var(--color-border); background: var(--color-surface); border-radius: var(--radius-md); padding: var(--space-6); }
       .boundary-grid article:nth-child(1) { border-top: 3px solid var(--color-blue); }
@@ -38,7 +45,10 @@
       .boundary-grid article:nth-child(3) { border-top: 3px solid var(--color-emerald); }
       .telemetry-list { max-width: var(--reading-max); padding-left: 1.2rem; }
       .telemetry-list li { margin-bottom: var(--space-2); }
-      @media (max-width: 860px) { .boundary-grid { grid-template-columns: 1fr; } }
+      @media (max-width: 860px) {
+        .boundary-grid { grid-template-columns: 1fr; }
+        .demo-frame { min-height: 1500px; }
+      }
     </style>
     <script type="application/ld+json">
 {
@@ -47,7 +57,7 @@
     {
       "@type": "WebPage",
       "name": "PM-ES Telemetry",
-      "description": "Public monitoring-only preview of the PM-ES telemetry interface using simulated data.",
+      "description": "Interactive monitoring-only public demo of the PM-ES telemetry interface using illustrative browser-generated data.",
       "url": "https://juggerknot18.github.io/PM-ES/telemetry/",
       "isPartOf": {
         "@type": "WebSite",
@@ -57,17 +67,19 @@
       "about": [
         "embedded supervision",
         "telemetry",
-        "DC-bus observation",
+        "DC-link observation",
         "motor monitoring",
         "encoder status",
         "fault diagnostics"
       ]
     },
     {
-      "@type": "ImageObject",
-      "name": "PM-ES public telemetry interface preview",
-      "contentUrl": "https://juggerknot18.github.io/PM-ES/assets/img/pm-es-telemetry-preview.svg",
-      "caption": "Simulated public visualization. It is not a live dashboard or a hardware-validation result."
+      "@type": "WebApplication",
+      "name": "PM-ES Public Telemetry Demo",
+      "applicationCategory": "EngineeringApplication",
+      "operatingSystem": "Web browser",
+      "url": "https://juggerknot18.github.io/PM-ES/telemetry/demo/",
+      "description": "Browser-only illustrative telemetry demo with no live hardware connection, no control authority and no private protocol implementation."
     },
     {
       "@type": "BreadcrumbList",
@@ -119,17 +131,20 @@
     </header>
     <main id="main-content">
       <section class="page-hero">
-        <p class="eyebrow">Monitoring interface · Public preview</p>
+        <p class="eyebrow">Monitoring interface · Interactive public demo</p>
         <h1>PM-ES telemetry</h1>
-        <p class="lead">A public, monitoring-only visualization of the Raspberry Pi companion interface for system observation, diagnostics and event review.</p>
-        <div class="notice caution"><strong>Simulation boundary.</strong> Every value shown in this public preview is illustrative simulated data. It is not a live connection, a bench measurement or a performance claim.</div>
+        <p class="lead">A browser-based, monitoring-only adaptation of the Raspberry Pi companion interface for system observation, diagnostics and event review.</p>
+        <div class="notice caution"><strong>Simulation boundary.</strong> Every value is illustrative and generated locally in the browser. This is not a live connection, bench measurement, hardware-validation result or performance claim.</div>
       </section>
 
       <section class="content-band">
-        <figure class="telemetry-preview">
-          <img src="../assets/img/pm-es-telemetry-preview.svg" width="1600" height="900" loading="eager" alt="PM-ES public telemetry preview showing simulated system flow, motor speed, DC-bus observation, communication health, protection status and alarms.">
-          <figcaption>The public preview reproduces the information hierarchy and monitoring intent of the private dashboard without publishing its backend, protocol implementation, hardware mappings or control paths.</figcaption>
+        <figure class="demo-shell">
+          <iframe class="demo-frame" src="demo/" title="Interactive PM-ES public telemetry demo" loading="eager" allowfullscreen></iframe>
+          <figcaption>The public demo preserves the visual structure and interactive monitoring experience while omitting the private backend, transport-frame layout, hardware mappings, exact protection thresholds, credentials and control paths.</figcaption>
         </figure>
+        <div class="actions demo-actions">
+          <a class="button secondary" href="demo/">Open the demo full page</a>
+        </div>
       </section>
 
       <section class="content-band">
@@ -138,28 +153,28 @@
           <h2>What the interface is designed to surface</h2>
         </div>
         <ul class="telemetry-list">
-          <li>DC-bus condition and high-level protection status;</li>
+          <li>relative DC-link condition and high-level protection status;</li>
           <li>target, commanded and measured motor-speed trends;</li>
           <li>encoder health and mechanical-reference validity;</li>
           <li>controller and telemetry-link availability;</li>
           <li>active alarms, event history and diagnostic counters;</li>
-          <li>clear separation between monitoring and future control functions.</li>
+          <li>clear separation between monitoring and control authority.</li>
         </ul>
       </section>
 
       <section class="content-band">
         <div class="section-heading">
           <p class="eyebrow">Publication boundary</p>
-          <h2>Public visualization, private implementation</h2>
+          <h2>Faithful interface, sanitized implementation</h2>
         </div>
         <div class="boundary-grid">
           <article>
             <h3>Published</h3>
-            <p>The monitoring categories, safety philosophy, validation status and a sanitized visual preview.</p>
+            <p>The visual layout, monitoring categories, scenario controls, charts, alarms, event log and CSV export using illustrative data.</p>
           </article>
           <article>
             <h3>Not published</h3>
-            <p>The private application source, binary frame layout, pin assignments, exact protection thresholds, credentials and deployment configuration.</p>
+            <p>The private application backend, transport-frame layout, checksum implementation, hardware mappings, exact thresholds, credentials and deployment configuration.</p>
           </article>
           <article>
             <h3>Current authority</h3>
