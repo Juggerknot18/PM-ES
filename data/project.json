@@ -24,6 +24,22 @@
     "hardwareIntegration": "in-progress",
     "publicBenchResults": "not-yet-released"
   },
+  "telemetry": {
+    "publicPreview": "https://juggerknot18.github.io/PM-ES/telemetry/",
+    "mode": "monitoring-only",
+    "dataStatus": "simulated-illustrative-data",
+    "liveHardwareConnection": false,
+    "publicSourceScope": "sanitized-visualization-only",
+    "privateImplementationPublished": false,
+    "observabilityAreas": [
+      "DC-bus condition",
+      "motor-speed trends",
+      "encoder health and reference validity",
+      "controller availability",
+      "telemetry-link health",
+      "alarms and event history"
+    ]
+  },
   "collaboration": {
     "open": true,
     "targetProfiles": [
@@ -48,13 +64,14 @@
       "EMC and signal integrity",
       "mechanical fabrication",
       "reproducibility",
-      "fault analysis"
+      "fault analysis",
+      "telemetry and human-machine interface review"
     ]
   },
   "contact": {
-    "type": "github-profile",
-    "url": "https://github.com/Juggerknot18"
-    "url": "mailto:research.pmes@gmail.com"
+    "type": "project-email",
+    "email": "research.pmes@gmail.com",
+    "url": "mailto:research.pmes@gmail.com",
     "github": "https://github.com/Juggerknot18"
   },
   "lastUpdated": "2026-07-11"
