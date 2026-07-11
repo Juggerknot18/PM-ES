@@ -1,0 +1,21 @@
+{
+  "name": "PM-ES public telemetry preview",
+  "canonicalUrl": "https://juggerknot18.github.io/PM-ES/telemetry/",
+  "mode": "monitoring-only",
+  "dataStatus": "simulated-illustrative-data",
+  "liveHardwareConnection": false,
+  "liveControl": false,
+  "privateDashboardSourcePublished": false,
+  "publicPreviewAsset": "https://juggerknot18.github.io/PM-ES/assets/img/pm-es-telemetry-preview.svg",
+  "observabilityAreas": [
+    "DC-bus condition",
+    "motor-speed trends",
+    "encoder health and reference validity",
+    "controller availability",
+    "telemetry-link health",
+    "alarms and event history"
+  ],
+  "validationBoundary": "The public preview is not a bench measurement or performance claim.",
+  "contact": "mailto:research.pmes@gmail.com",
+  "lastUpdated": "2026-07-11"
+}

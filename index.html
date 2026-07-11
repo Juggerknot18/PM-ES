@@ -43,15 +43,16 @@
     "embedded systems",
     "motor supervision",
     "DC bus protection",
-    "regenerative energy"
+    "regenerative energy",
+    "telemetry",
+    "Raspberry Pi monitoring"
   ],
   "location": {
     "@type": "Country",
     "name": "France"
   }
 }
-</script>
-    
+    </script>
   </head>
   <body>
     <a class="skip-link" href="#main-content">Skip to main content</a>
@@ -67,107 +68,124 @@
         </button>
         <nav id="primary-navigation" class="primary-nav" aria-label="Primary navigation">
           <a href="./" aria-current="page">Home</a>
-<a href="research/">Research</a>
-<a href="architecture/">Architecture</a>
-<a href="systems/">Systems</a>
-<a href="safety/">Safety</a>
-<a href="status/">Status</a>
-<a href="publications/">Publications</a>
-<a href="collaboration/">Collaboration</a>
-<a href="about/">About</a>
-<a href="contact/">Contact</a>
+          <a href="research/">Research</a>
+          <a href="architecture/">Architecture</a>
+          <a href="systems/">Systems</a>
+          <a href="telemetry/">Telemetry</a>
+          <a href="safety/">Safety</a>
+          <a href="status/">Status</a>
+          <a href="publications/">Publications</a>
+          <a href="collaboration/">Collaboration</a>
+          <a href="about/">About</a>
+          <a href="contact/">Contact</a>
         </nav>
       </div>
     </header>
     <main id="main-content">
       <section class="hero">
-      <div class="hero-copy">
-        <p class="eyebrow">Independent R&amp;D Project · France</p>
-        <h1>PM-ES</h1>
-        <p class="subtitle">Power Management - Electric System</p>
-        <p class="lead">An independent engineering research project exploring permanent-magnet electrical machines, power electronics, embedded supervision and regenerative energy management.</p>
-        <div class="actions">
-          <a class="button primary" href="architecture/">Explore the architecture</a>
-          <a class="button secondary" href="research/">Research &amp; collaboration</a>
+        <div class="hero-copy">
+          <p class="eyebrow">Independent R&amp;D Project · France</p>
+          <h1>PM-ES</h1>
+          <p class="subtitle">Power Management - Electric System</p>
+          <p class="lead">An independent engineering research project exploring permanent-magnet electrical machines, power electronics, embedded supervision and regenerative energy management.</p>
+          <div class="actions">
+            <a class="button primary" href="architecture/">Explore the architecture</a>
+            <a class="button secondary" href="research/">Research &amp; collaboration</a>
+          </div>
         </div>
-      </div>
-      <figure class="system-diagram" aria-labelledby="diagram-title" aria-describedby="diagram-desc">
-      <svg role="img" viewBox="0 0 920 540" xmlns="http://www.w3.org/2000/svg">
-        <title id="diagram-title">PM-ES architecture at a glance</title>
-        <desc id="diagram-desc">The FOC controller drives the permanent-magnet machine. The STM32 supervisor exchanges high-level commands with the controller, receives encoder feedback, observes the autonomous brake chopper, and sends monitoring data to the Raspberry Pi.</desc>
-        <defs>
-          <marker id="arrow" markerWidth="10" markerHeight="10" refX="7" refY="3" orient="auto" markerUnits="strokeWidth">
-            <path d="M0,0 L0,6 L8,3 z" fill="#2F91D8"></path>
-          </marker>
-        </defs>
-        <rect x="30" y="40" width="250" height="110" rx="12" class="diagram-box machine"></rect>
-        <text x="55" y="82">Permanent-magnet machine</text>
-        <text x="55" y="114" class="diagram-note">electromechanical system under test</text>
-        <rect x="330" y="40" width="250" height="110" rx="12" class="diagram-box control"></rect>
-        <text x="355" y="82">FOC controller</text>
-        <text x="355" y="114" class="diagram-note">drives motor phases</text>
-        <rect x="330" y="225" width="250" height="120" rx="12" class="diagram-box supervisor"></rect>
-        <text x="355" y="268">STM32G474 supervisor</text>
-        <text x="355" y="300" class="diagram-note">states, permissions, diagnostics</text>
-        <rect x="650" y="225" width="230" height="120" rx="12" class="diagram-box monitor"></rect>
-        <text x="675" y="268">Raspberry Pi</text>
-        <text x="675" y="300" class="diagram-note">monitoring only in V1</text>
-        <rect x="40" y="380" width="260" height="110" rx="12" class="diagram-box safety"></rect>
-        <text x="65" y="423">Autonomous brake chopper</text>
-        <text x="65" y="455" class="diagram-note">DC-bus protection remains hardware-authoritative</text>
-        <rect x="650" y="40" width="230" height="110" rx="12" class="diagram-box sensor"></rect>
-        <text x="675" y="82">Encoder feedback</text>
-        <text x="675" y="114" class="diagram-note">position and reference information</text>
-        <path d="M280 95 H330" class="diagram-line" marker-end="url(#arrow)"></path>
-        <path d="M455 150 V225" class="diagram-line" marker-end="url(#arrow)"></path>
-        <path d="M580 285 H650" class="diagram-line" marker-end="url(#arrow)"></path>
-        <path d="M650 95 C615 95 615 255 580 255" class="diagram-line" marker-end="url(#arrow)"></path>
-        <path d="M300 435 C365 435 365 335 330 315" class="diagram-line observed" marker-end="url(#arrow)"></path>
-      </svg>
-      <figcaption>High-level public diagram. It shows responsibility boundaries, not implementation details, pins, thresholds or private protocols.</figcaption>
-    </figure>
-    </section>
-    <section class="content-band">
-      <div class="section-heading">
-        <p class="eyebrow">Mission</p>
-        <h2>Layered supervision for experimental energy systems</h2>
-      </div>
-      <p>PM-ES investigates how a permanent-magnet electromechanical system can be supervised, protected and observed through a layered architecture. Low-level motor control is delegated to a FOC controller, while an STM32G474 coordinates system states, measurements, permissions and diagnostics. Critical DC-bus protection remains autonomous at the hardware level.</p>
-      <div class="notice status"><strong>Current status.</strong> The supervisory firmware architecture is implemented and has undergone software-level simulation. Hardware integration and bench validation remain in progress. No public performance claim is made until measurements are documented and reproducible.</div>
-    </section>
-    <section class="content-band">
-      <div class="section-heading">
-        <p class="eyebrow">Research domains</p>
-        <h2>Public workstreams</h2>
-      </div>
-      <div class="card-grid">
-<article class="info-card">
-          <svg aria-hidden="true"><use href="assets/icons/sprite.svg#icon-machine"></use></svg>
-          <h3>Electrical machine</h3>
-          <p>Permanent-magnet machine prototyping and mechanical reference questions.</p>
-        </article>
-<article class="info-card">
-          <svg aria-hidden="true"><use href="assets/icons/sprite.svg#icon-supervision"></use></svg>
-          <h3>Embedded supervision</h3>
-          <p>STM32G474 supervision, diagnostics, permissions and state coordination.</p>
-        </article>
-<article class="info-card">
-          <svg aria-hidden="true"><use href="assets/icons/sprite.svg#icon-safety"></use></svg>
-          <h3>DC-bus protection</h3>
-          <p>Autonomous hardware protection with software observation and diagnostics.</p>
-        </article>
-<article class="info-card">
-          <svg aria-hidden="true"><use href="assets/icons/sprite.svg#icon-research"></use></svg>
-          <h3>Experimental validation</h3>
-          <p>Staged simulation, integration, bench testing and reproducible reporting.</p>
-        </article>
-</div>
-    </section>
-    <section class="cta-band">
-      <h2>Collaboration is welcome when it respects the public boundary</h2>
-      <p>Research papers, technical publications, architecture reviews, experimental feedback and collaboration proposals are welcome.</p>
-      <a class="button primary" href="collaboration/">Review collaboration areas</a>
-    </section>
+        <figure class="system-diagram" aria-labelledby="diagram-title" aria-describedby="diagram-desc">
+          <svg role="img" viewBox="0 0 920 540" xmlns="http://www.w3.org/2000/svg">
+            <title id="diagram-title">PM-ES architecture at a glance</title>
+            <desc id="diagram-desc">The FOC controller drives the permanent-magnet machine. The STM32 supervisor exchanges high-level commands with the controller, receives encoder feedback, observes the autonomous brake chopper, and sends monitoring data to the Raspberry Pi.</desc>
+            <defs>
+              <marker id="arrow" markerWidth="10" markerHeight="10" refX="7" refY="3" orient="auto" markerUnits="strokeWidth">
+                <path d="M0,0 L0,6 L8,3 z" fill="#2F91D8"></path>
+              </marker>
+            </defs>
+            <rect x="30" y="40" width="250" height="110" rx="12" class="diagram-box machine"></rect>
+            <text x="55" y="82">Permanent-magnet machine</text>
+            <text x="55" y="114" class="diagram-note">electromechanical system under test</text>
+            <rect x="330" y="40" width="250" height="110" rx="12" class="diagram-box control"></rect>
+            <text x="355" y="82">FOC controller</text>
+            <text x="355" y="114" class="diagram-note">drives motor phases</text>
+            <rect x="330" y="225" width="250" height="120" rx="12" class="diagram-box supervisor"></rect>
+            <text x="355" y="268">STM32G474 supervisor</text>
+            <text x="355" y="300" class="diagram-note">states, permissions, diagnostics</text>
+            <rect x="650" y="225" width="230" height="120" rx="12" class="diagram-box monitor"></rect>
+            <text x="675" y="268">Raspberry Pi</text>
+            <text x="675" y="300" class="diagram-note">monitoring only in V1</text>
+            <rect x="40" y="380" width="260" height="110" rx="12" class="diagram-box safety"></rect>
+            <text x="65" y="423">Autonomous brake chopper</text>
+            <text x="65" y="455" class="diagram-note">DC-bus protection remains hardware-authoritative</text>
+            <rect x="650" y="40" width="230" height="110" rx="12" class="diagram-box sensor"></rect>
+            <text x="675" y="82">Encoder feedback</text>
+            <text x="675" y="114" class="diagram-note">position and reference information</text>
+            <path d="M280 95 H330" class="diagram-line" marker-end="url(#arrow)"></path>
+            <path d="M455 150 V225" class="diagram-line" marker-end="url(#arrow)"></path>
+            <path d="M580 285 H650" class="diagram-line" marker-end="url(#arrow)"></path>
+            <path d="M650 95 C615 95 615 255 580 255" class="diagram-line" marker-end="url(#arrow)"></path>
+            <path d="M300 435 C365 435 365 335 330 315" class="diagram-line observed" marker-end="url(#arrow)"></path>
+          </svg>
+          <figcaption>High-level public diagram. It shows responsibility boundaries, not implementation details, pins, thresholds or private protocols.</figcaption>
+        </figure>
+      </section>
+
+      <section class="content-band">
+        <div class="section-heading">
+          <p class="eyebrow">Mission</p>
+          <h2>Layered supervision for experimental energy systems</h2>
+        </div>
+        <p>PM-ES investigates how a permanent-magnet electromechanical system can be supervised, protected and observed through a layered architecture. Low-level motor control is delegated to a FOC controller, while an STM32G474 coordinates system states, measurements, permissions and diagnostics. Critical DC-bus protection remains autonomous at the hardware level.</p>
+        <div class="notice status"><strong>Current status.</strong> The supervisory firmware architecture is implemented and has undergone software-level simulation. Hardware integration and bench validation remain in progress. No public performance claim is made until measurements are documented and reproducible.</div>
+      </section>
+
+      <section class="content-band">
+        <div class="section-heading">
+          <p class="eyebrow">Research domains</p>
+          <h2>Public workstreams</h2>
+        </div>
+        <div class="card-grid">
+          <article class="info-card">
+            <svg aria-hidden="true"><use href="assets/icons/sprite.svg#icon-machine"></use></svg>
+            <h3>Electrical machine</h3>
+            <p>Permanent-magnet machine prototyping and mechanical reference questions.</p>
+          </article>
+          <article class="info-card">
+            <svg aria-hidden="true"><use href="assets/icons/sprite.svg#icon-supervision"></use></svg>
+            <h3>Embedded supervision</h3>
+            <p>STM32G474 supervision, diagnostics, permissions and state coordination.</p>
+          </article>
+          <article class="info-card">
+            <svg aria-hidden="true"><use href="assets/icons/sprite.svg#icon-safety"></use></svg>
+            <h3>DC-bus protection</h3>
+            <p>Autonomous hardware protection with software observation and diagnostics.</p>
+          </article>
+          <article class="info-card">
+            <svg aria-hidden="true"><use href="assets/icons/sprite.svg#icon-research"></use></svg>
+            <h3>Experimental validation</h3>
+            <p>Staged simulation, integration, bench testing and reproducible reporting.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="content-band">
+        <div class="section-heading">
+          <p class="eyebrow">Telemetry</p>
+          <h2>Public monitoring-interface preview</h2>
+        </div>
+        <p>The Raspberry Pi companion interface is designed to surface system state, DC-bus observation, speed trends, encoder health, communication status, alarms and event history. The public preview uses simulated data and publishes no private dashboard source or implementation detail.</p>
+        <div class="notice info"><strong>Monitoring only.</strong> The public visualization is not connected to hardware and does not expose live control functions, private frame formats, pin assignments or exact protection thresholds.</div>
+        <div class="actions">
+          <a class="button primary" href="telemetry/">View the telemetry preview</a>
+          <a class="button secondary" href="status/">Review validation status</a>
+        </div>
+      </section>
+
+      <section class="cta-band">
+        <h2>Collaboration is welcome when it respects the public boundary</h2>
+        <p>Research papers, technical publications, architecture reviews, experimental feedback and collaboration proposals are welcome.</p>
+        <a class="button primary" href="collaboration/">Review collaboration areas</a>
+      </section>
     </main>
     <footer class="site-footer">
       <div class="footer-grid">
@@ -178,19 +196,21 @@
         </div>
         <nav aria-label="Footer navigation" class="footer-links">
           <a href="./" aria-current="page">Home</a>
-<a href="research/">Research</a>
-<a href="architecture/">Architecture</a>
-<a href="systems/">Systems</a>
-<a href="safety/">Safety</a>
-<a href="status/">Status</a>
-<a href="publications/">Publications</a>
-<a href="collaboration/">Collaboration</a>
-<a href="about/">About</a>
-<a href="contact/">Contact</a>
+          <a href="research/">Research</a>
+          <a href="architecture/">Architecture</a>
+          <a href="systems/">Systems</a>
+          <a href="telemetry/">Telemetry</a>
+          <a href="safety/">Safety</a>
+          <a href="status/">Status</a>
+          <a href="publications/">Publications</a>
+          <a href="collaboration/">Collaboration</a>
+          <a href="about/">About</a>
+          <a href="contact/">Contact</a>
           <a href="policy/">Public content policy</a>
         </nav>
         <div>
           <p class="footer-title">Public contact</p>
+          <p><a href="mailto:research.pmes@gmail.com">research.pmes@gmail.com</a></p>
           <p><a href="https://github.com/Juggerknot18" rel="noopener noreferrer">GitHub profile</a></p>
           <p>Last updated <time datetime="2026-07-11">2026-07-11</time></p>
         </div>

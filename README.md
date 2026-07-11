@@ -4,6 +4,14 @@ Public website for PM-ES, an independent R&D project based in France exploring p
 
 This repository is the dedicated public website surface for PM-ES. It is not a firmware repository, hardware release, private engineering archive or product brochure.
 
+## Public website
+
+- Website: https://juggerknot18.github.io/PM-ES/
+- Telemetry preview: https://juggerknot18.github.io/PM-ES/telemetry/
+- Project contact: research.pmes@gmail.com
+
+The telemetry page is a sanitized monitoring-only visualization built from simulated illustrative data. It does not publish the private Raspberry Pi dashboard application, backend, protocol implementation, hardware mappings, control paths or measured performance.
+
 ## Local Preview
 
 Serve the repository root with any static server:
@@ -16,7 +24,7 @@ Open `http://localhost:8000/`.
 
 ## Publication Model
 
-The site is designed for manual GitHub Pages publication from `main` and `/(root)` after human review and merge. Expected canonical URL placeholder:
+The site is designed for manual GitHub Pages publication from `main` and `/(root)` after human review and merge. Canonical URL:
 
 `https://juggerknot18.github.io/PM-ES/`
 
@@ -24,4 +32,4 @@ Deployment remains a manual human-controlled action. No workflow is installed in
 
 ## Public Boundary
 
-Only public, approved project facts are included. No personal contact details, private repository links, firmware source, hardware pin maps, thresholds, credentials or measured performance claims are published.
+Only public, approved project facts are included. No personal identity, private repository links, firmware source, hardware pin maps, exact protection thresholds, credentials or measured performance claims are published.

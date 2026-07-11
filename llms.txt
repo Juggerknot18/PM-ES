@@ -19,6 +19,7 @@ Status as of 2026-07-11: supervisory firmware architecture implemented; software
 - [Research](https://juggerknot18.github.io/PM-ES/research/): Public research themes around permanent-magnet systems, power electronics and energy management.
 - [Architecture](https://juggerknot18.github.io/PM-ES/architecture/): High-level public architecture for the electrical-machine, controller, supervision and protection layers.
 - [Systems](https://juggerknot18.github.io/PM-ES/systems/): Public system breakdown covering the machine, control, supervision, protection and monitoring layers.
+- [Telemetry](https://juggerknot18.github.io/PM-ES/telemetry/): Public monitoring-only preview covering simulated DC-bus observation, motor-speed trends, encoder status, communication health, alarms and event history. It is not a live dashboard or a hardware-validation result.
 - [Safety](https://juggerknot18.github.io/PM-ES/safety/): Safety boundaries, validation caution and publication limits for the public project website.
 
 ## Collaboration and research discovery
@@ -27,6 +28,7 @@ PM-ES is open to focused, evidence-based exchanges with Fab Labs, fablabs, maker
 
 French discovery equivalents include fablab, laboratoire universitaire, laboratoire de recherche, groupe de recherche, chercheur indépendant, ingénieur indépendant, électronique de puissance, machine électrique, moteur à aimants permanents and systèmes embarqués.
 
+- [Collaboration](https://juggerknot18.github.io/PM-ES/collaboration/): Public collaboration intent, useful technical contribution areas and research discovery context.
 - [Contact](https://juggerknot18.github.io/PM-ES/contact/): Official public contact page with the dedicated PM-ES project email and GitHub contact route.
 
 ## Development status
@@ -36,7 +38,8 @@ French discovery equivalents include fablab, laboratoire universitaire, laborato
 
 ## Machine-readable resources
 
-- [data/project.json](https://juggerknot18.github.io/PM-ES/data/project.json): Machine-readable public project metadata, validation status and collaboration profiles.
+- [data/project.json](https://juggerknot18.github.io/PM-ES/data/project.json): Machine-readable public project metadata, validation status, telemetry preview and collaboration profiles.
+- [data/telemetry.json](https://juggerknot18.github.io/PM-ES/data/telemetry.json): Machine-readable public telemetry scope, simulation boundary, observability areas and contact route.
 - [sitemap.xml](https://juggerknot18.github.io/PM-ES/sitemap.xml): Canonical sitemap for public crawler discovery.
 
 ## Contact and repository
