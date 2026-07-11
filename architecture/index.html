@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Architecture Overview | PM-ES</title>
+    <meta name="description" content="High-level PM-ES architecture showing machine, FOC controller, STM32G474 supervisor, encoder, brake chopper and Raspberry Pi monitoring roles.">
+    <meta name="robots" content="index,follow">
+    <link rel="canonical" href="https://juggerknot18.github.io/PM-ES/architecture/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="PM-ES">
+    <meta property="og:title" content="Architecture Overview | PM-ES">
+    <meta property="og:description" content="High-level PM-ES architecture showing machine, FOC controller, STM32G474 supervisor, encoder, brake chopper and Raspberry Pi monitoring roles.">
+    <meta property="og:url" content="https://juggerknot18.github.io/PM-ES/architecture/">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Architecture Overview | PM-ES">
+    <meta name="twitter:description" content="High-level PM-ES architecture showing machine, FOC controller, STM32G474 supervisor, encoder, brake chopper and Raspberry Pi monitoring roles.">
+    <meta name="theme-color" content="#0B0F14">
+    <link rel="manifest" href="../site.webmanifest">
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="../assets/css/main.css">
+    
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="brand" href="../" aria-label="PM-ES home">
+          <span class="brand-mark" aria-hidden="true">PM</span>
+          <span><strong>PM-ES</strong><small>Power Management - Electric System</small></span>
+        </a>
+        <button class="menu-button" type="button" aria-controls="primary-navigation" aria-expanded="false">
+          <span class="menu-lines" aria-hidden="true"></span>
+          <span class="visually-hidden">Toggle navigation</span>
+        </button>
+        <nav id="primary-navigation" class="primary-nav" aria-label="Primary navigation">
+          <a href="../">Home</a>
+<a href="../research/">Research</a>
+<a href="../architecture/" aria-current="page">Architecture</a>
+<a href="../systems/">Systems</a>
+<a href="../safety/">Safety</a>
+<a href="../status/">Status</a>
+<a href="../publications/">Publications</a>
+<a href="../collaboration/">Collaboration</a>
+<a href="../about/">About</a>
+<a href="../contact/">Contact</a>
+        </nav>
+      </div>
+    </header>
+    <main id="main-content">
+      <section class="page-hero">
+      <p class="eyebrow">Architecture</p>
+      <h1>Separated responsibilities, explicit authority boundaries</h1>
+      <p class="lead">PM-ES separates fast motor control, supervisory decisions, hardware protection and user-facing monitoring. This separation limits the authority of each layer and keeps critical protection independent from application software.</p>
+    </section>
+    <section class="content-band">
+      <figure class="system-diagram" aria-labelledby="diagram-title" aria-describedby="diagram-desc">
+      <svg role="img" viewBox="0 0 920 540" xmlns="http://www.w3.org/2000/svg">
+        <title id="diagram-title">PM-ES architecture at a glance</title>
+        <desc id="diagram-desc">The FOC controller drives the permanent-magnet machine. The STM32 supervisor exchanges high-level commands with the controller, receives encoder feedback, observes the autonomous brake chopper, and sends monitoring data to the Raspberry Pi.</desc>
+        <defs>
+          <marker id="arrow" markerWidth="10" markerHeight="10" refX="7" refY="3" orient="auto" markerUnits="strokeWidth">
+            <path d="M0,0 L0,6 L8,3 z" fill="#2F91D8"></path>
+          </marker>
+        </defs>
+        <rect x="30" y="40" width="250" height="110" rx="12" class="diagram-box machine"></rect>
+        <text x="55" y="82">Permanent-magnet machine</text>
+        <text x="55" y="114" class="diagram-note">electromechanical system under test</text>
+        <rect x="330" y="40" width="250" height="110" rx="12" class="diagram-box control"></rect>
+        <text x="355" y="82">FOC controller</text>
+        <text x="355" y="114" class="diagram-note">drives motor phases</text>
+        <rect x="330" y="225" width="250" height="120" rx="12" class="diagram-box supervisor"></rect>
+        <text x="355" y="268">STM32G474 supervisor</text>
+        <text x="355" y="300" class="diagram-note">states, permissions, diagnostics</text>
+        <rect x="650" y="225" width="230" height="120" rx="12" class="diagram-box monitor"></rect>
+        <text x="675" y="268">Raspberry Pi</text>
+        <text x="675" y="300" class="diagram-note">monitoring only in V1</text>
+        <rect x="40" y="380" width="260" height="110" rx="12" class="diagram-box safety"></rect>
+        <text x="65" y="423">Autonomous brake chopper</text>
+        <text x="65" y="455" class="diagram-note">DC-bus protection remains hardware-authoritative</text>
+        <rect x="650" y="40" width="230" height="110" rx="12" class="diagram-box sensor"></rect>
+        <text x="675" y="82">Encoder feedback</text>
+        <text x="675" y="114" class="diagram-note">position and reference information</text>
+        <path d="M280 95 H330" class="diagram-line" marker-end="url(#arrow)"></path>
+        <path d="M455 150 V225" class="diagram-line" marker-end="url(#arrow)"></path>
+        <path d="M580 285 H650" class="diagram-line" marker-end="url(#arrow)"></path>
+        <path d="M650 95 C615 95 615 255 580 255" class="diagram-line" marker-end="url(#arrow)"></path>
+        <path d="M300 435 C365 435 365 335 330 315" class="diagram-line observed" marker-end="url(#arrow)"></path>
+      </svg>
+      <figcaption>High-level public diagram. It shows responsibility boundaries, not implementation details, pins, thresholds or private protocols.</figcaption>
+    </figure>
+      <div class="table-wrap">
+        <table>
+          <caption>Public responsibility layers</caption>
+          <thead><tr><th>Layer</th><th>Public role</th><th>Authority boundary</th></tr></thead>
+          <tbody>
+            <tr><td>Permanent-magnet machine</td><td>Electromechanical conversion</td><td>Physical system under test</td></tr>
+            <tr><td>FOC controller</td><td>Low-level motor control</td><td>Drives motor phases; receives high-level commands</td></tr>
+            <tr><td>STM32G474 supervisor</td><td>States, permissions, ramps, diagnostics</td><td>Does not drive motor phases directly</td></tr>
+            <tr><td>Encoder feedback</td><td>Position and reference information</td><td>Measurement input to supervision</td></tr>
+            <tr><td>Autonomous hardware brake chopper</td><td>DC-bus protection</td><td>Cannot be disabled by supervisory firmware</td></tr>
+            <tr><td>Raspberry Pi monitoring</td><td>Status and diagnostics display</td><td>Monitoring-only in V1</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="notice caution"><strong>Public boundary.</strong> This page intentionally omits private pin maps, thresholds, component values, timing windows and protocol layouts.</div>
+    </section>
+    <section class="related-links"><h2>System details</h2><a href="../systems/">Read system overview</a><a href="../safety/">Safety model</a><a href="../research/">Research questions</a></section>
+    </main>
+    <footer class="site-footer">
+      <div class="footer-grid">
+        <div>
+          <p class="footer-title">PM-ES</p>
+          <p>Independent engineering research project in France exploring permanent-magnet systems, power electronics, embedded supervision and regenerative energy management.</p>
+          <p class="fine-print">No cookies. No tracking.</p>
+        </div>
+        <nav aria-label="Footer navigation" class="footer-links">
+          <a href="../">Home</a>
+<a href="../research/">Research</a>
+<a href="../architecture/" aria-current="page">Architecture</a>
+<a href="../systems/">Systems</a>
+<a href="../safety/">Safety</a>
+<a href="../status/">Status</a>
+<a href="../publications/">Publications</a>
+<a href="../collaboration/">Collaboration</a>
+<a href="../about/">About</a>
+<a href="../contact/">Contact</a>
+          <a href="../PUBLIC_CONTENT_POLICY.md">Public content policy</a>
+        </nav>
+        <div>
+          <p class="footer-title">Public contact</p>
+          <p><a href="https://github.com/Juggerknot18" rel="noopener noreferrer">GitHub profile</a></p>
+          <p>Last updated <time datetime="2026-07-11">2026-07-11</time></p>
+        </div>
+      </div>
+    </footer>
+    <script src="../assets/js/progressive.js" defer></script>
+  </body>
+</html>
