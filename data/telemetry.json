@@ -1,21 +1,30 @@
 {
-  "name": "PM-ES public telemetry preview",
+  "name": "PM-ES interactive public telemetry demo",
   "canonicalUrl": "https://juggerknot18.github.io/PM-ES/telemetry/",
+  "demoUrl": "https://juggerknot18.github.io/PM-ES/telemetry/demo/",
   "mode": "monitoring-only",
+  "interfaceType": "interactive-browser-demo",
   "dataStatus": "simulated-illustrative-data",
   "liveHardwareConnection": false,
   "liveControl": false,
+  "runtimeApi": false,
   "privateDashboardSourcePublished": false,
-  "publicPreviewAsset": "https://juggerknot18.github.io/PM-ES/assets/img/pm-es-telemetry-preview.svg",
+  "privateProtocolImplementationPublished": false,
+  "publicSourceScope": "sanitized-visualization-and-generic-simulator-only",
+  "scenarios": [
+    "nominal",
+    "regeneration",
+    "sensor alert"
+  ],
   "observabilityAreas": [
-    "DC-bus condition",
+    "relative DC-link condition",
     "motor-speed trends",
     "encoder health and reference validity",
     "controller availability",
     "telemetry-link health",
     "alarms and event history"
   ],
-  "validationBoundary": "The public preview is not a bench measurement or performance claim.",
+  "validationBoundary": "The public demo is not a live connection, bench measurement, hardware-validation result or performance claim.",
   "contact": "mailto:research.pmes@gmail.com",
   "lastUpdated": "2026-07-11"
 }
