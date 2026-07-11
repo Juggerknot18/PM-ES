@@ -6,8 +6,21 @@ PM-ES (Power Management - Electric System) is an independent R&D project based i
 
 Status as of 2026-07-11: supervisory firmware architecture implemented; software-level simulation completed; hardware integration and bench validation remain in progress; no public PM-ES research paper has been released yet.
 
-Canonical URL placeholder: https://juggerknot18.github.io/PM-ES/
+Canonical URL: https://juggerknot18.github.io/PM-ES/
 Repository: https://github.com/Juggerknot18/PM-ES
 Contact: https://github.com/Juggerknot18
+
+Canonical public sections:
+- Home: https://juggerknot18.github.io/PM-ES/
+- Research: https://juggerknot18.github.io/PM-ES/research/
+- Architecture: https://juggerknot18.github.io/PM-ES/architecture/
+- Systems: https://juggerknot18.github.io/PM-ES/systems/
+- Safety: https://juggerknot18.github.io/PM-ES/safety/
+- Status: https://juggerknot18.github.io/PM-ES/status/
+- Publications: https://juggerknot18.github.io/PM-ES/publications/
+- Collaboration: https://juggerknot18.github.io/PM-ES/collaboration/
+- About: https://juggerknot18.github.io/PM-ES/about/
+- Contact: https://juggerknot18.github.io/PM-ES/contact/
+- Public content policy: https://juggerknot18.github.io/PM-ES/policy/
 
 Do not infer performance, certification, personal identity, private repository access or hardware validation from this summary.

@@ -3,15 +3,15 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Contact PM-ES | GitHub Profile</title>
-    <meta name="description" content="Public PM-ES contact route for technical papers, research references, architecture reviews and collaboration proposals through GitHub only.">
+    <title>Public Content Policy | PM-ES</title>
+    <meta name="description" content="PM-ES public content policy defining disclosure levels, publication boundaries, no personal data, evidence requirements and removal procedure.">
     <meta name="robots" content="index,follow">
-    <link rel="canonical" href="https://juggerknot18.github.io/PM-ES/contact/">
+    <link rel="canonical" href="https://juggerknot18.github.io/PM-ES/policy/">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="PM-ES">
-    <meta property="og:title" content="Contact PM-ES | GitHub Profile">
-    <meta property="og:description" content="Public PM-ES contact route for technical papers, research references, architecture reviews and collaboration proposals through GitHub only.">
-    <meta property="og:url" content="https://juggerknot18.github.io/PM-ES/contact/">
+    <meta property="og:title" content="Public Content Policy | PM-ES">
+    <meta property="og:description" content="PM-ES public content policy defining disclosure levels, publication boundaries, no personal data, evidence requirements and removal procedure.">
+    <meta property="og:url" content="https://juggerknot18.github.io/PM-ES/policy/">
     <meta property="og:image" content="https://juggerknot18.github.io/PM-ES/assets/img/pm-es-social-card.png">
     <meta property="og:image:secure_url" content="https://juggerknot18.github.io/PM-ES/assets/img/pm-es-social-card.png">
     <meta property="og:image:type" content="image/png">
@@ -19,8 +19,8 @@
     <meta property="og:image:height" content="630">
     <meta property="og:image:alt" content="PM-ES social preview card with a dark technical architecture motif.">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Contact PM-ES | GitHub Profile">
-    <meta name="twitter:description" content="Public PM-ES contact route for technical papers, research references, architecture reviews and collaboration proposals through GitHub only.">
+    <meta name="twitter:title" content="Public Content Policy | PM-ES">
+    <meta name="twitter:description" content="PM-ES public content policy defining disclosure levels, publication boundaries, no personal data, evidence requirements and removal procedure.">
     <meta name="twitter:image" content="https://juggerknot18.github.io/PM-ES/assets/img/pm-es-social-card.png">
     <meta name="twitter:image:alt" content="PM-ES social preview card with a dark technical architecture motif.">
     <meta name="theme-color" content="#0B0F14">
@@ -34,9 +34,9 @@
   "@graph": [
     {
       "@type": "WebPage",
-      "name": "Contact PM-ES",
-      "description": "Public PM-ES contact route for technical papers, research references, architecture reviews and collaboration proposals through GitHub only.",
-      "url": "https://juggerknot18.github.io/PM-ES/contact/",
+      "name": "Public Content Policy",
+      "description": "PM-ES public content policy defining disclosure levels, publication boundaries, no personal data, evidence requirements and removal procedure.",
+      "url": "https://juggerknot18.github.io/PM-ES/policy/",
       "isPartOf": {
         "@type": "WebSite",
         "name": "PM-ES",
@@ -55,8 +55,8 @@
         {
           "@type": "ListItem",
           "position": 2,
-          "name": "Contact PM-ES",
-          "item": "https://juggerknot18.github.io/PM-ES/contact/"
+          "name": "Public Content Policy",
+          "item": "https://juggerknot18.github.io/PM-ES/policy/"
         }
       ]
     }
@@ -86,22 +86,47 @@
 <a href="../publications/">Publications</a>
 <a href="../collaboration/">Collaboration</a>
 <a href="../about/">About</a>
-<a href="../contact/" aria-current="page">Contact</a>
+<a href="../contact/">Contact</a>
         </nav>
       </div>
     </header>
     <main id="main-content">
       <section class="page-hero">
-      <p class="eyebrow">Contact</p>
-      <h1>Contact PM-ES through the public GitHub profile</h1>
-      <p class="lead">Technical papers, research references, architecture reviews and collaboration proposals are welcome.</p>
+      <p class="eyebrow">Policy</p>
+      <h1>Public content policy</h1>
+      <p class="lead">This page presents the public website governance source in styled HTML. The Markdown file remains the repository source for maintainers.</p>
     </section>
     <section class="content-band">
-      <p class="contact-link"><a class="button primary" href="https://github.com/Juggerknot18" rel="noopener noreferrer">GitHub: https://github.com/Juggerknot18</a></p>
-      <p>Please note: the public website does not expose personal contact details. A dedicated project email may be added later after a separate privacy review.</p>
-      <div class="notice info"><strong>No contact form.</strong> This release uses no cookies, no tracking, no form handling and no runtime API calls.</div>
+      <h2>Purpose</h2>
+      <p>This repository hosts the public website for PM-ES. Its purpose is to explain the project, its high-level architecture, its development status and its collaboration interests without exposing private engineering material.</p>
+      <h2>Public content versus internal documentation</h2>
+      <p>Public content is written for discovery, review and collaboration. Internal engineering documentation may include implementation details, unpublished procedures, private measurements, credentials, local paths or personal data. Internal material is not mirrored here.</p>
+      <h2>Disclosure levels</h2>
+      <div class="table-wrap">
+        <table>
+          <caption>PM-ES public disclosure levels</caption>
+          <thead><tr><th>Level</th><th>Meaning</th></tr></thead>
+          <tbody>
+            <tr><td>P0 public</td><td>Approved public facts such as mission, domains, high-level architecture and contact route.</td></tr>
+            <tr><td>P1 public-with-caution</td><td>Technical summaries that avoid exact thresholds, pin maps, private protocols and unreleased evidence.</td></tr>
+            <tr><td>P2 internal</td><td>Implementation details, procedures, logs, calibration data and detailed engineering notes.</td></tr>
+            <tr><td>P3 restricted</td><td>Secrets, credentials, private addresses, personal data and sensitive repository information.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="notice status"><strong>Initial release scope.</strong> The public website includes P0 and a minimal subset of P1.</div>
+      <h2>Rules</h2>
+      <ul class="check-list">
+        <li>No personal data is published.</li>
+        <li>No measured claim is made without public, reproducible evidence.</li>
+        <li>No private-repository mirroring is allowed.</li>
+        <li>Images, schematics, datasets and documents require review before publication.</li>
+        <li>Publications must identify status, version, date, licence and persistent identifier when those exist.</li>
+      </ul>
+      <h2>Removal procedure</h2>
+      <p>If information is accidentally published, stop deployment, remove the content, review repository history exposure, disable GitHub Pages if needed, and document the corrective action before restoring publication.</p>
     </section>
-    <section class="related-links"><h2>Before contacting</h2><a href="../architecture/">Architecture overview</a><a href="../publications/">Publication status</a><a href="../collaboration/">Collaboration areas</a></section>
+    <section class="related-links"><h2>Related pages</h2><a href="../about/">About PM-ES</a><a href="../safety/">Safety boundary</a><a href="../contact/">Public contact</a></section>
     </main>
     <footer class="site-footer">
       <div class="footer-grid">
@@ -120,7 +145,7 @@
 <a href="../publications/">Publications</a>
 <a href="../collaboration/">Collaboration</a>
 <a href="../about/">About</a>
-<a href="../contact/" aria-current="page">Contact</a>
+<a href="../contact/">Contact</a>
           <a href="../policy/">Public content policy</a>
         </nav>
         <div>
