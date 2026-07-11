@@ -1,5 +1,7 @@
-# Public telemetry preview
+# Public telemetry demo
 
-This directory contains the public PM-ES telemetry page only.
+This directory contains the public PM-ES telemetry page and a browser-only interactive demo adapted from the visual structure of the private Raspberry Pi dashboard.
 
-The visualization uses simulated illustrative data and is not connected to live hardware. The private Raspberry Pi dashboard application, backend, protocol implementation, hardware mappings, control paths and deployment configuration are intentionally not published in this repository.
+The public demo uses illustrative locally generated data. It has no hardware connection, no live control authority and no runtime backend.
+
+The private dashboard backend, transport-frame layout, checksum implementation, hardware mappings, exact protection thresholds, credentials, deployment configuration and private control paths are intentionally not published in this repository.
