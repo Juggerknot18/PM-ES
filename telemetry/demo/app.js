@@ -1,7 +1,3 @@
-/* PM-ES Dashboard — frontend vanilla JS (aucune dépendance externe).
- * WebSocket temps réel, jauges SVG, graphiques canvas maison, timeline.
- * Léger par construction : rendu piloté par les messages (10 Hz). */
-
 "use strict";
 
 const C = {
@@ -153,40 +149,38 @@ class Chart {
     return a >= 1000 ? (v / 1000).toFixed(1) + "k"
          : a >= 10 ? v.toFixed(0) : v.toFixed(1);
   }
+
 }
 
-/* ======================= Instanciation ======================= */
+/* ======================= Public demo widgets ======================= */
 const gauges = {
-  vbus:  new Gauge($("g-vbus"),  { min: 0, max: 70, unit: "V", label: "Bus DC",
-           decimals: 1, sub: "trip 58 · rel 54",
-           zones: [[0, C.ok], [54, C.warn], [58, C.fault]] }),
-  rpm:   new Gauge($("g-rpm"),   { min: 0, max: 1000, unit: "rpm",
-           label: "RPM mesuré", sub: "encodeur",
-           zones: [[0, C.info], [1001, C.fault]] }),
-  cmd:   new Gauge($("g-cmd"),   { min: 0, max: 1000, unit: "rpm",
-           label: "RPM commandé", sub: "rampe superviseur",
-           zones: [[0, C.copper]] }),
-  brake: new Gauge($("g-brake"), { min: 0, max: 4, unit: "", label: "Brake",
-           decimals: 0, sub: "" }),
-  can:   new Gauge($("g-can"),   { min: 0, max: 1, unit: "", label: "CAN FSESC" }),
-  spi:   new Gauge($("g-spi"),   { min: 0, max: 12, unit: "Hz", label: "Poll SPI",
-           decimals: 1, sub: "" }),
+  vbus: new Gauge($("g-vbus"), { min: 0, max: 70, unit: "V", label: "DC link",
+    decimals: 1, sub: "illustrative voltage" }),
+  rpm: new Gauge($("g-rpm"), { min: 0, max: 1000, unit: "rpm", label: "Measured speed",
+    sub: "illustrative encoder", zones: [[0, C.info], [1001, C.fault]] }),
+  cmd: new Gauge($("g-cmd"), { min: 0, max: 1000, unit: "rpm", label: "Commanded speed",
+    sub: "supervisor ramp", zones: [[0, C.copper]] }),
+  brake: new Gauge($("g-brake"), { min: 0, max: 4, unit: "", label: "Protection",
+    decimals: 0, sub: "" }),
+  can: new Gauge($("g-can"), { min: 0, max: 1, unit: "", label: "Controller link" }),
+  spi: new Gauge($("g-spi"), { min: 0, max: 12, unit: "Hz", label: "Demo update",
+    decimals: 1, sub: "browser generated" }),
 };
 
 const chVbus = new Chart($("ch-vbus"),
-  [{ key: "vbus_mv", label: "VBUS", color: C.info, width: 2 }],
-  { minSpan: 2000 });
+  [{ key: "dc_link_v", label: "DC-link voltage", color: C.info, width: 2 }],
+  { minSpan: 2 });
 const chRpm = new Chart($("ch-rpm"), [
-  { key: "enc_rpm_filt",  label: "mesuré (filt)", color: C.info, width: 2 },
-  { key: "enc_rpm_raw",   label: "mesuré (brut)", color: C.dim },
-  { key: "commanded_rpm", label: "commandé",      color: C.copperHi },
-  { key: "target_rpm",    label: "cible",         color: C.ok },
+  { key: "speed_filtered", label: "measured (filtered)", color: C.info, width: 2 },
+  { key: "speed_raw", label: "measured (raw)", color: C.dim },
+  { key: "commanded_rpm", label: "commanded", color: C.copperHi },
+  { key: "target_rpm", label: "target", color: C.ok },
 ], { minSpan: 50 });
 const chErr = new Chart($("ch-err"), [
-  { key: "can_error_count", label: "erreurs CAN", color: C.fault },
-  { key: "enc_index_err",   label: "erreurs index", color: C.warn },
-  { key: "enc_z_glitch",    label: "glitchs Z",   color: C.info },
-  { key: "brake_evt_total", label: "évén. brake", color: C.copper },
+  { key: "controller_alerts", label: "controller alerts", color: C.fault },
+  { key: "encoder_alerts", label: "encoder alerts", color: C.warn },
+  { key: "reference_rejections", label: "reference rejections", color: C.info },
+  { key: "protection_events", label: "protection events", color: C.copper },
 ], { minSpan: 4 });
 
 function legend(el, chart) {
@@ -196,185 +190,151 @@ function legend(el, chart) {
 legend($("lg-rpm"), chRpm);
 legend($("lg-err"), chErr);
 
-/* ======================= Rendu d'état ======================= */
 function setBadge(el, txt, cls) { el.textContent = txt; el.className = "badge " + cls; }
 function setNode(id, cls) { $(id).setAttribute("class", "node " + cls); }
 
 function render(snap) {
   const f = snap.frame, st = snap.stats;
-  const chartsVBusMv = f ? f.vbus_mv : null;
 
-  /* --- badges --- */
-  setBadge($("b-spi"), st.spi_online ? "SPI ONLINE" : "SPI OFFLINE",
-           st.spi_online ? "ok" : "fault");
-  setBadge($("b-mode"), st.mode === "simulation" ? "SIMULATION" : "SPI RÉEL", "mode");
-  $("btn-sim").classList.toggle("on", st.mode === "simulation");
+  setBadge($("b-spi"), st.link_online ? "DATA LINK ONLINE" : "DATA LINK OFFLINE",
+    st.link_online ? "ok" : "fault");
+  setBadge($("b-mode"), "PUBLIC DEMO", "mode");
+  $("btn-sim").textContent = `Scenario: ${st.scenario}`;
+  $("btn-sim").classList.add("on");
 
   if (f) {
-    setBadge($("b-fesc"), f.fesc_online ? "FSESC ONLINE" : "FSESC OFFLINE",
-             f.fesc_online ? "ok" : "fault");
-    setBadge($("b-enc"), f.enc_healthy ? "ENCODEUR OK" : "ENCODEUR LOST",
-             f.enc_healthy ? "ok" : "fault");
-    setBadge($("b-index"), f.enc_index_valid ? "INDEX VALID" : "NO INDEX",
-             f.enc_index_valid ? "ok" : "warn");
-    const blc = ["ok", "warn", "warn", "fault", "fault"][f.brake_level];
-    setBadge($("b-brake"), "BRAKE " + f.brake_level_txt, blc);
-    const mst = f.motor_state_txt;
-    setBadge($("b-motor"), "MOTEUR " + mst,
-             mst === "FAULT" ? "fault" :
-             mst === "RUNNING" ? "ok" :
-             mst === "DERATING" ? "warn" : "info");
+    setBadge($("b-fesc"), f.controller_online ? "CONTROLLER ONLINE" : "CONTROLLER OFFLINE",
+      f.controller_online ? "ok" : "fault");
+    setBadge($("b-enc"), f.encoder_healthy ? "ENCODER OK" : "ENCODER ALERT",
+      f.encoder_healthy ? "ok" : "fault");
+    setBadge($("b-index"), f.reference_valid ? "REFERENCE VALID" : "REFERENCE PENDING",
+      f.reference_valid ? "ok" : "warn");
+    const plc = ["ok", "warn", "warn", "fault", "fault"][f.protection_level];
+    setBadge($("b-brake"), "PROTECTION " + f.protection_level_txt, plc);
+    setBadge($("b-motor"), "MACHINE " + f.motor_state_txt,
+      f.motor_state_txt === "FAULT" ? "fault" :
+      f.motor_state_txt === "RUNNING" ? "ok" :
+      f.motor_state_txt === "LIMITED" ? "warn" : "info");
 
-    /* --- jauges --- */
-    gauges.vbus.set(f.vbus_v);
+    const dcColor = f.dc_link_state === "active" ? C.fault :
+      f.dc_link_state === "elevated" ? C.warn : C.ok;
+    gauges.vbus.set(f.dc_link_v, dcColor);
     gauges.rpm.set(Math.abs(f.measured_rpm), null,
-                   f.measured_rpm < 0 ? "sens inverse" : "encodeur");
-    gauges.cmd.set(Math.abs(f.commanded_rpm), C.copperHi,
-                   `cible ${f.target_rpm}`);
-    gauges.brake.set(f.brake_level, LEVEL_COLOR[f.brake_level],
-                     f.brake_level_txt);
-    gauges.can.setText(f.fesc_online ? "ON" : "OFF",
-                       f.fesc_online ? C.ok : C.fault,
-                       `err ${f.can_error_count}`);
+      f.measured_rpm < 0 ? "reverse direction" : "illustrative encoder");
+    gauges.cmd.set(Math.abs(f.commanded_rpm), C.copperHi, `target ${f.target_rpm}`);
+    gauges.brake.set(f.protection_level, LEVEL_COLOR[f.protection_level], f.protection_level_txt);
+    gauges.can.setText(f.controller_online ? "ON" : "OFF",
+      f.controller_online ? C.ok : C.fault, `alerts ${f.controller_alerts}`);
 
-    /* --- synoptique --- */
-    $("sy-vbus").textContent = f.vbus_v.toFixed(1) + " V";
-    $("sy-fesc").textContent = f.fesc_online ? f.motor_state_txt : "OFFLINE";
+    $("sy-vbus").textContent = f.dc_link_v.toFixed(1) + " V";
+    $("sy-fesc").textContent = f.controller_online ? f.motor_state_txt : "OFFLINE";
     $("sy-rpm").textContent = f.measured_rpm + " rpm";
-    $("sy-enc").textContent = f.enc_index_valid ? "INDEX ✓" : "NO INDEX";
-    $("sy-brake").textContent = f.ovp_active ? "OVP · DUMP ACTIF"
-                                             : f.brake_level_txt;
+    $("sy-enc").textContent = f.reference_valid ? "VALID ✓" : "PENDING";
+    $("sy-brake").textContent = f.protection_active ? "ACTIVE · DISSIPATING" : f.protection_level_txt;
 
-    setNode("nd-bus", f.vbus_v >= 58 ? "fault" : f.vbus_v >= 54 ? "warn" : "ok");
-    setNode("nd-fsesc", !f.fesc_online ? "fault" :
-            f.motor_state_txt === "FAULT" ? "fault" : "ok");
+    setNode("nd-bus", f.dc_link_state === "active" ? "fault" : f.dc_link_state === "elevated" ? "warn" : "ok");
+    setNode("nd-fsesc", !f.controller_online || f.motor_state_txt === "FAULT" ? "fault" : "ok");
     setNode("nd-motor", f.motor_state_txt === "FAULT" ? "fault" :
-            f.motor_state_txt === "DERATING" ? "warn" : "ok");
-    setNode("nd-enc", "small " + (!f.enc_healthy ? "fault" :
-            f.enc_index_valid ? "ok" : "warn"));
+      f.motor_state_txt === "LIMITED" ? "warn" : "ok");
+    setNode("nd-enc", "small " + (!f.encoder_healthy ? "fault" : f.reference_valid ? "ok" : "warn"));
     setNode("nd-brake", "small " +
-            (f.brake_level >= 3 ? "fault" : f.brake_level >= 1 ? "warn" : "ok"));
+      (f.protection_level >= 3 ? "fault" : f.protection_level >= 1 ? "warn" : "ok"));
 
-    const running = ["STARTING", "RUNNING", "DERATING", "STOPPING",
-                     "INDEX_SEARCH"].includes(f.motor_state_txt);
+    const running = ["STARTING", "RUNNING", "LIMITED", "STOPPING", "REFERENCE SEARCH"].includes(f.motor_state_txt);
     $("lk-bus-fsesc").setAttribute("class", "link power" + (running ? " flow" : ""));
     $("lk-fsesc-mot").setAttribute("class", "link power" + (running ? " flow" : ""));
-    $("lk-bus-brake").setAttribute("class", "link dump" + (f.ovp_active ? " hot" : ""));
-    $("lk-mot-enc").setAttribute("class", "link signal" +
-        (Math.abs(f.measured_rpm) > 5 ? " live" : ""));
-    $("lk-can").setAttribute("class", "link signal dashed" +
-        (f.fesc_online ? " live" : ""));
+    $("lk-bus-brake").setAttribute("class", "link dump" + (f.protection_active ? " hot" : ""));
+    $("lk-mot-enc").setAttribute("class", "link signal" + (Math.abs(f.measured_rpm) > 5 ? " live" : ""));
+    $("lk-can").setAttribute("class", "link signal dashed" + (f.controller_online ? " live" : ""));
 
-    /* --- graphiques --- */
     const t = st.last_valid_ts;
     chVbus.push(t, f); chRpm.push(t, f); chErr.push(t, f);
-
-    /* --- détails --- */
     renderDetail(f);
   }
 
-  gauges.spi.set(st.poll_hz || 0, st.spi_online ? C.ok : C.fault,
-                 st.mode === "simulation" ? "simulation" : "spidev");
+  gauges.spi.set(st.update_hz || 0, st.link_online ? C.ok : C.fault, "public simulation");
 
-  /* --- alarmes --- */
   const al = $("alarms");
   $("alarm-count").textContent = snap.alarms.length;
   $("alarm-count").className = "pill" + (snap.alarms.length ? " hot" : "");
   al.innerHTML = snap.alarms.length
     ? snap.alarms.map(a => `<li class="${a.level}">${a.msg}</li>`).join("")
-    : `<li class="empty">Aucune alarme — système nominal</li>`;
+    : `<li class="empty">No active alarm — illustrative nominal state</li>`;
 
-  /* --- timeline --- */
   $("events").innerHTML = [...snap.events].reverse().map(e => {
     const d = new Date(e.ts * 1000);
     const ts = d.toTimeString().slice(0, 8);
     return `<li class="${e.level}"><span class="e-ts">${ts}</span>` +
-           `<span class="e-src">${e.source}</span>` +
-           `<span class="e-msg">${e.msg}</span></li>`;
+      `<span class="e-src">${e.source}</span>` +
+      `<span class="e-msg">${e.msg}</span></li>`;
   }).join("");
 
-  /* --- footer SPI --- */
-  $("s-mode").textContent = st.mode === "simulation" ? "SIMULATION" : "SPI";
-  $("s-frames").textContent = `${st.rx_valid}/${st.rx_total}`;
-  $("s-crc").textContent = st.crc_errors;
-  $("s-io").textContent = st.io_errors;
-  $("s-hz").textContent = (st.poll_hz || 0) + " Hz";
-  $("s-lat").textContent = st.poll_latency_ms + " ms";
-  $("s-seq").textContent = f ? f.seq : "—";
+  $("s-mode").textContent = "PUBLIC SIMULATION";
+  $("s-frames").textContent = `${st.sample_valid}/${st.sample_total}`;
+  $("s-crc").textContent = st.data_check;
+  $("s-io").textContent = st.demo_event_count;
+  $("s-hz").textContent = (st.update_hz || 0) + " Hz";
+  $("s-lat").textContent = st.render_latency_ms + " ms";
+  $("s-seq").textContent = st.scenario.toUpperCase();
   $("s-age").textContent = st.last_valid_ts
     ? ((Date.now() / 1000 - st.last_valid_ts).toFixed(1) + " s") : "—";
-  const crcEl = $("s-crcok");
-  if (st.rx_valid === 0) { crcEl.textContent = "CRC —"; crcEl.className = "crc-badge"; }
-  else if (st.crc_errors === 0 || st.spi_online) {
-    crcEl.textContent = "CRC OK"; crcEl.className = "crc-badge ok";
-  } else { crcEl.textContent = "CRC ERREUR"; crcEl.className = "crc-badge bad"; }
-  void chartsVBusMv;
+  const check = $("s-crcok");
+  check.textContent = "ILLUSTRATIVE DATA";
+  check.className = "crc-badge ok";
 }
 
 const DETAIL_MAP = [
-  ["— BRAKE CHOPPER —", null],
-  ["État / défaut", f => `${f.brake_state_txt} / ${f.brake_fault_txt}`],
-  ["OVP · FORCE · CMD/PIN", f =>
-      `${f.ovp_active} · ${f.brake_force} · ${f.brake_cmd_logical}/${f.brake_cmd_pin}`],
-  ["Évén. fenêtre / total", f => `${f.brake_evt_window} / ${f.brake_evt_total}`],
-  ["Durées dern/max/cumul", f =>
-      `${f.brake_last_dur_ms} / ${f.brake_max_dur_ms} / ${f.brake_total_ms} ms`],
-  ["Temp. dump", f => f.temp_dump_na ? "N/A (pas de capteur)" : f.temp_dump / 10 + " °C"],
-  ["— ENCODEUR —", null],
-  ["Position", f => f.enc_position_ticks + " ticks"],
-  ["RPM filt / brut", f => `${f.enc_rpm_filt} / ${f.enc_rpm_raw}`],
-  ["Z ok/glitch/stale", f => `${f.enc_z_count} / ${f.enc_z_glitch} / ${f.enc_z_stale}`],
-  ["Erreurs d'index", f => f.enc_index_err],
-  ["— MOTEUR / CAN —", null],
-  ["Défaut moteur", f => f.motor_fault_txt],
-  ["Cible / commandé / mesuré", f =>
-      `${f.target_rpm} / ${f.commanded_rpm} / ${f.measured_rpm}`],
-  ["CAN tx / rx / err", f =>
-      `${f.can_tx_count} / ${f.can_rx_count} / ${f.can_error_count}`],
+  ["— PROTECTION —", null],
+  ["State / level", f => `${f.protection_state_txt} / ${f.protection_level_txt}`],
+  ["Energy path", f => f.protection_active ? "active (illustrative)" : "standby"],
+  ["Events / recent window", f => `${f.protection_events} / ${f.protection_window_events}`],
+  ["Last illustrative duration", f => `${f.last_event_duration_ms} ms`],
+  ["Thermal status", f => f.thermal_status],
+  ["— ENCODER —", null],
+  ["Reference", f => f.reference_valid ? "valid" : "pending"],
+  ["Speed filtered / raw", f => `${f.speed_filtered} / ${f.speed_raw} rpm`],
+  ["Reference rejections", f => f.reference_rejections],
+  ["Encoder alerts", f => f.encoder_alerts],
+  ["— MACHINE / CONTROLLER —", null],
+  ["Machine state", f => f.motor_state_txt],
+  ["Target / command / measured", f => `${f.target_rpm} / ${f.commanded_rpm} / ${f.measured_rpm}`],
+  ["Controller status", f => f.controller_online ? "online" : "offline"],
+  ["Controller alerts", f => f.controller_alerts],
 ];
 function renderDetail(f) {
   $("detail").innerHTML = DETAIL_MAP.map(([k, fn]) =>
     fn === null ? `<span class="sep">${k}</span>`
-                : `<span class="k">${k}</span><span class="v">${fn(f)}</span>`
+      : `<span class="k">${k}</span><span class="v">${fn(f)}</span>`
   ).join("");
 }
 
-/* ======================= WebSocket ======================= */
 let ws, wsRetry = 500;
 function connect() {
   const proto = location.protocol === "https:" ? "wss" : "ws";
-  ws = new WebSocket(`${proto}://${location.host}/ws`);
+  ws = new WebSocket(`${proto}://${location.host}/public-demo-stream`);
   ws.onmessage = (ev) => {
     const msg = JSON.parse(ev.data);
-    if (msg.history) { chVbus.seed(msg.history); chRpm.seed(msg.history);
-                       chErr.seed(msg.history); return; }
+    if (msg.history) { chVbus.seed(msg.history); chRpm.seed(msg.history); chErr.seed(msg.history); return; }
     render(msg);
   };
   ws.onopen = () => { wsRetry = 500; };
   ws.onclose = () => {
-    setBadge($("b-spi"), "DASHBOARD OFFLINE", "fault");
+    setBadge($("b-spi"), "PUBLIC DEMO OFFLINE", "fault");
     setTimeout(connect, wsRetry);
     wsRetry = Math.min(wsRetry * 2, 5000);
   };
 }
 connect();
-setInterval(() => { if (ws && ws.readyState === 1) ws.send("k"); }, 20000);
 
-/* ======================= Boutons ======================= */
 $("btn-sim").onclick = async () => {
-  const wantSim = !$("btn-sim").classList.contains("on");
-  const r = await fetch("/api/mode", { method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ sim: wantSim }) }).then(r => r.json());
-  if (r.error) alert(r.error);
+  await fetch("demo-api/scenario", { method: "POST" });
 };
 $("btn-reset").onclick = async () => {
-  await fetch("/api/reset-graphs", { method: "POST" });
+  await fetch("demo-api/reset-graphs", { method: "POST" });
   chVbus.clear(); chRpm.clear(); chErr.clear();
 };
-$("btn-csv").onclick = () => { location.href = "/api/export.csv"; };
-$("btn-log").onclick = () => { location.href = "/api/log"; };
+$("btn-csv").onclick = () => window.dispatchEvent(new CustomEvent("pm-es-export-csv"));
+$("btn-log").onclick = () => window.dispatchEvent(new CustomEvent("pm-es-export-log"));
 $("btn-kiosk").onclick = () => {
-  document.fullscreenElement ? document.exitFullscreen()
-                             : document.documentElement.requestFullscreen();
+  document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen();
 };
